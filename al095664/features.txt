@@ -1,0 +1,16 @@
+Proyecto
+
+Requisitos a cumplir:
+El código del proyecto se debe presentar tras hacer un fork del repositorio de proyectos del curso en GitHub y un "pull request" para entregar lso cambios. Toda la información del proceso la podeis encontrar en: https://github.com/cursoagil/proyectos
+El proyecto debe incorporar un pom.xml de configuración de Apache Maven que permita la compilación, ejecución de los tests y generación de JavaDocs del proyecto.
+Todas las historias de usuario del proyecto deben estar dadas de alta en JIRA
+Todo el código tiene que estar escrito con TDD.
+Cada user story debe tener al menos una prueba de aceptación.
+Pasos necesarios para poner el sistema en integración continua, explicados.
+La complejidad en los métodos debe ser como máximo de 5.
+El código debe:
+Estar en un idioma, spanglish no vale.
+Estar limpio de comentarios
+Tener menos de 10 lineas por método
+Tener simetría
+Cumplir el principio de responsabilidad única
