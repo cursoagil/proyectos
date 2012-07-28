@@ -23,9 +23,7 @@ public class PersonTest {
 	public void assignedPhonesToPeopleAreRecoverable() {
 		Phone phone = mock(Phone.class);
 		person.addPhone(phone);
-		
 		assertThat(person.getPhones(), hasItem(phone));
-		
 	}
 	
 }

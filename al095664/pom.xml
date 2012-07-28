@@ -15,7 +15,11 @@
 		<artifactId>mockito-all</artifactId>
 		<version>1.8.4</version>
 	</dependency>
-            
+    <dependency>
+            <groupId>junit-addons</groupId>
+            <artifactId>junit-addons</artifactId>
+            <version>1.4</version>
+    </dependency>
 	</dependencies>
 	<build>
 	<plugins>
@@ -32,7 +36,6 @@
 				</execution>
 			</executions>
 		</plugin>
-
 		<plugin>
 			<artifactId>maven-compiler-plugin</artifactId>
 			<version>2.5.1</version>
@@ -41,6 +44,27 @@
 				<target>1.6</target>
 			</configuration>
 		</plugin>
+		<plugin>
+                <groupId>org.jbehave</groupId>
+                <artifactId>jbehave-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>run-stories-in-test-scope</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <includes>
+                                <include>**/*Stories.java</include>
+                            </includes>
+                            <scope>test</scope>
+                            <ignoreFailureInStories>true</ignoreFailureInStories>
+                            <ignoreFailureInView>false</ignoreFailureInView>
+                        </configuration>
+                        <goals>
+                            <goal>run-stories-as-embeddables</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 	</plugins>
 	</build>
 </project>
