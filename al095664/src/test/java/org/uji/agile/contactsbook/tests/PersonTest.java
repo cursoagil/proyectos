@@ -18,7 +18,6 @@ public class PersonTest {
 		person = new Person();
 	}
 	
-	
 	@Test
 	public void assignedPhonesToPeopleAreRecoverable() {
 		Phone phone = mock(Phone.class);
