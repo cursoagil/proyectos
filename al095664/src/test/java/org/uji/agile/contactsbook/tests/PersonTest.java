@@ -6,6 +6,7 @@ import org.uji.agile.contactsbook.Person;
 import org.uji.agile.contactsbook.Phone;
 
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 
@@ -24,5 +25,16 @@ public class PersonTest {
 		person.addPhone(phone);
 		assertThat(person.getPhones(), hasItem(phone));
 	}
+	
+	@Test
+	public void equalsReturnsTwoForDifferentPhonesWithTheSamePhoneNumber() {
+		Phone phone = new Phone("600343212");
+		Phone equalPhone = new Phone("600343212");
+		
+		assertTrue(phone.equals(equalPhone));
+		assertTrue(equalPhone.equals(phone));
+	}
+	
+	
 	
 }

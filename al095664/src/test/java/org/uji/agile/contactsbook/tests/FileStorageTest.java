@@ -1,14 +1,13 @@
 package org.uji.agile.contactsbook.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.uji.agile.contactsbook.*;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public class FileStorageTest {
 
@@ -20,21 +19,34 @@ public class FileStorageTest {
 	}
 	
 	@Test
-	public void storageRecoversPhonesFromPerson() {
-		Person person = mock(Person.class);
-
-		List<Phone> phones = new ArrayList<Phone>();
-		phones.add(mock(Phone.class));
+	public void saveStoresThePersonAsASerializedObject() {
+		Person person = new Person();
+		person.addPhone(Phone.create("676767676"));
 		
-		when(person.getPhones()).thenReturn(phones);
+		boolean result = storage.save(person);
 		
-		Iterable<Phone> recoveredPhones =
-				storage.getPhonesFromPerson(person);
+		assertTrue(result);
+	}
 
-		verify(person).getPhones();
-
-		assertSame(phones, recoveredPhones);
+	@Test
+	public void storedPersonCanBeRecovered() {
+		Person person = new Person("Manolo Domínguez");
 		
+		person.addPhone(Phone.create("600600600"));
+		
+		boolean result = storage.save(person);
+		
+		assertTrue(result);
+		
+		Person recoveredPerson = null;
+		try {
+			recoveredPerson = (Person)storage.read("Manolo Domínguez");
+		} catch (NotFoundException e) {
+			Assert.fail();
+		}
+		List<Phone> fetchedPhones = recoveredPerson.getPhones();
+		assertEquals(1, fetchedPhones.size());
+		assertEquals(fetchedPhones.get(0), Phone.create("600600600"));
 	}
 	
 }

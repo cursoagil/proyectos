@@ -1,7 +1,6 @@
 package org.uji.agile.contactsbook;
 
 public interface Storage {
-
-	Iterable<Phone> getPhonesFromPerson(Person person);
-	
-}
+	boolean save( StorageSerializable storageable );
+	StorageSerializable read(String identifier) throws NotFoundException;
+}	
