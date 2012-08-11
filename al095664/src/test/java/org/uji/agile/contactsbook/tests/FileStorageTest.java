@@ -41,7 +41,7 @@ public class FileStorageTest {
 		Person recoveredPerson = null;
 		try {
 			recoveredPerson = (Person)storage.read("Manolo Domínguez");
-		} catch (NotFoundException e) {
+		} catch (NotFoundIdentifierException e) {
 			Assert.fail();
 		}
 		List<Phone> fetchedPhones = recoveredPerson.getPhones();
@@ -49,4 +49,15 @@ public class FileStorageTest {
 		assertEquals(fetchedPhones.get(0), Phone.create("600600600"));
 	}
 	
+	
+	@Test
+	public void existsShouldReturnFalseWhenThePersonHasntBeenStored() {
+		assertFalse(storage.exists("Aimar"));
+	}
+	
+	@Test
+	public void existsShouldReturnTrueWhenThePersonHasBeenSavedPreviously() {
+		storage.save(new Person("José María Ruíz"));
+		assertTrue(storage.exists("José María Ruíz"));
+	}
 }

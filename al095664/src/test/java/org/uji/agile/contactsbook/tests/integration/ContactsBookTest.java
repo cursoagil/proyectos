@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uji.agile.contactsbook.ContactsBook;
 import org.uji.agile.contactsbook.FileStorage;
-import org.uji.agile.contactsbook.NotFoundException;
+import org.uji.agile.contactsbook.NotFoundIdentifierException;
 import org.uji.agile.contactsbook.Phone;
 import org.uji.agile.contactsbook.PhoneService;
 import org.uji.agile.contactsbook.PhoneValidator;
@@ -50,7 +50,7 @@ public class ContactsBookTest {
 	}
 	
 	@Test
-	public void addPhoneAllowsToAddPhonesToPerson() throws NotFoundException {
+	public void addPhoneAllowsToAddPhonesToPerson() throws NotFoundIdentifierException {
 		ContactsBook.addPhone("606912312").to("Jaime");
 		assertThat(ContactsBook.getPhonesFromPersonName("Jaime"), hasItem(Phone.create("606912312")));
 	}

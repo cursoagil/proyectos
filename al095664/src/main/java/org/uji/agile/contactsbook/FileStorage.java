@@ -1,5 +1,6 @@
 package org.uji.agile.contactsbook;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,28 +40,41 @@ public class FileStorage implements Storage {
 	}
 
 	@Override
-	public StorageSerializable read(String identifier) throws NotFoundException {
+	public StorageSerializable read(String identifier) throws NotFoundIdentifierException {
 		ObjectInputStream persistenceStream = null;
+		
+		boolean anyExceptionThrown = false;
 		
 		try {
 			persistenceStream = new ObjectInputStream(
 									new FileInputStream(buildSerializedFileRoute(identifier))
 								);
 		} catch (FileNotFoundException e) {
-			throw new NotFoundException();
+			anyExceptionThrown = true;
 		} catch (IOException e) {
-			throw new NotFoundException();
+			anyExceptionThrown = true;
+		} finally {
+			if (anyExceptionThrown) throw new NotFoundIdentifierException();
 		}
 		
 		Object rawObject = null;
 		try {
 			rawObject = persistenceStream.readObject();
 		} catch (IOException e) {
-			throw new NotFoundException();
+			anyExceptionThrown = true;
 		} catch (ClassNotFoundException e) {
-			throw new NotFoundException();
+			anyExceptionThrown = true;
 		}
-		
+		finally {
+			if (anyExceptionThrown) throw new NotFoundIdentifierException();
+		}
+
 		return (StorageSerializable) rawObject;
+	}
+
+	@Override
+	public boolean exists(String identifier) {
+		File file = new File(buildSerializedFileRoute(identifier));
+		return file.exists();	
 	}	
 }

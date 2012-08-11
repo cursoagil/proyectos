@@ -8,7 +8,7 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.uji.agile.contactsbook.ContactsBook;
 import org.uji.agile.contactsbook.FileStorage;
-import org.uji.agile.contactsbook.NotFoundException;
+import org.uji.agile.contactsbook.NotFoundIdentifierException;
 import org.uji.agile.contactsbook.Phone;
 import org.uji.agile.contactsbook.PhoneService;
 import org.uji.agile.contactsbook.PhoneValidator;
@@ -57,7 +57,7 @@ public class ContactsBookSteps {
 		try {
 			ContactsBook.getPhonesFromPersonName(personName);
 		}
-		catch( NotFoundException ex) {
+		catch( NotFoundIdentifierException ex) {
 			fail();
 		}
 	}
@@ -68,7 +68,7 @@ public class ContactsBookSteps {
 	}
 	
 	@Then("the phone is added to the person \"$personName\"")
-	public void phoneIsAddedToThePerson(String personName) throws NotFoundException {
+	public void phoneIsAddedToThePerson(String personName) throws NotFoundIdentifierException {
 		List<Phone> phones = ContactsBook.getPhonesFromPersonName(personName);
 		assertThat(phones, hasItem(Phone.create(TEST_PHONE_NUMBER)));
 	}

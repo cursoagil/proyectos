@@ -38,10 +38,14 @@ public class ContactsBook {
 		Phone phone = Phone.create(phoneNumber);
 		
 		Person person = null;
-		try {
-			person = (Person)storage.read(personName);	
+		if (storage.exists(personName)) {
+			try {
+				person = (Person)storage.read(personName);
+			} catch (NotFoundIdentifierException e) {
+				e.printStackTrace();
+			}	
 		}
-		catch( NotFoundException ex) {
+		else {
 			person = new Person(personName);
 		}
 		person.addPhone(phone);
@@ -52,7 +56,7 @@ public class ContactsBook {
 		storage = iStorage;
 	}
 
-	public static List<Phone> getPhonesFromPersonName(String personName) throws NotFoundException {
+	public static List<Phone> getPhonesFromPersonName(String personName) throws NotFoundIdentifierException {
 		Person person = null;
 		person = (Person)storage.read(personName);	
 		return person.getPhones();
