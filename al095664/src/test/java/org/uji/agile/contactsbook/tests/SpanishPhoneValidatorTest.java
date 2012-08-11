@@ -45,19 +45,19 @@ public class SpanishPhoneValidatorTest {
 	}
 	
 	@Test
-	public void validateShouldReturnTrueWhenThePhoneIsANineCharsNumberStartingWith6() {
+	public void validateShouldReturnTrueWhenThePhoneIsAMobilePhoneNumberStartingWith6() {
 		when(phoneMock.getPhone()).thenReturn("612345678");
 		assertTrue(validator.validate(phoneMock));
 	}
 	
 	@Test
-	public void validateShouldReturnTrueWhenThePhoneIsANineCharsNumberStartingWith7() {
+	public void validateShouldReturnTrueWhenThePhoneIsAMobilePhoneNumberStartingWith7() {
 		when(phoneMock.getPhone()).thenReturn("712345678");
 		assertTrue(validator.validate(phoneMock));
 	}
 	
 	@Test
-	public void validateShouldReturnTrueWhenThePhoneIsANonMobilePhoneNumber() {
+	public void validateShouldReturnTrueWhenThePhoneIsALandLinePhoneNumber() {
 		when(phoneMock.getPhone()).thenReturn("964534047");
 		assertTrue(validator.validate(phoneMock));
 	}
