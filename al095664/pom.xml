@@ -20,6 +20,16 @@
             <artifactId>junit-addons</artifactId>
             <version>1.4</version>
     </dependency>
+    <dependency>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-core</artifactId>
+            <version>3.6.6</version>
+    </dependency>
+    <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>jbehave-junit-runner</artifactId>
+            <version>1.0.1</version>
+        </dependency>
 	</dependencies>
 	<build>
 	<plugins>
@@ -50,7 +60,7 @@
                 <executions>
                     <execution>
                         <id>run-stories-in-test-scope</id>
-                        <phase>test</phase>
+                        <phase>integration-test</phase>
                         <configuration>
                             <includes>
                                 <include>**/*Stories.java</include>

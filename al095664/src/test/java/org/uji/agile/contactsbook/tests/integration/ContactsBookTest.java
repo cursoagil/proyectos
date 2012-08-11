@@ -3,9 +3,14 @@ package org.uji.agile.contactsbook.tests.integration;
 import org.junit.Before;
 import org.junit.Test;
 import org.uji.agile.contactsbook.ContactsBook;
+import org.uji.agile.contactsbook.FileStorage;
+import org.uji.agile.contactsbook.NotFoundException;
 import org.uji.agile.contactsbook.Phone;
 import org.uji.agile.contactsbook.PhoneService;
 import org.uji.agile.contactsbook.PhoneValidator;
+
+import static org.junit.matchers.JUnitMatchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ContactsBookTest {
@@ -17,10 +22,9 @@ public class ContactsBookTest {
 	public void setUp() {
 		mockPhoneService = mock(PhoneService.class);
 		ContactsBook.setPhoneService(mockPhoneService);
-		
 		mockPhoneValidator = mock(PhoneValidator.class);
 		ContactsBook.setPhoneValidator(mockPhoneValidator);
-		
+		ContactsBook.setStorage(new FileStorage());
 		when(mockPhoneValidator.validate(Phone.create("606912312"))).thenReturn(true);
 		
 	}
@@ -45,4 +49,9 @@ public class ContactsBookTest {
 		verify(mockPhoneService, never()).call(Phone.create(phonenumber));
 	}
 	
+	@Test
+	public void addPhoneAllowsToAddPhonesToPerson() throws NotFoundException {
+		ContactsBook.addPhone("606912312").to("Jaime");
+		assertThat(ContactsBook.getPhonesFromPersonName("Jaime"), hasItem(Phone.create("606912312")));
+	}
 }
