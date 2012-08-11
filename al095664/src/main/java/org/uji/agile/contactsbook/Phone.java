@@ -25,6 +25,13 @@ public class Phone implements Serializable {
 		}
 		return phoneInstances.get(phone);
 	}
+	
+
+	@Override
+	public int hashCode() {
+		return Integer.valueOf(this.phonenumber);
+	};
+	
 	@Override
 	public boolean equals(Object otherPhone) {
 		if (!(otherPhone instanceof Phone)) {

@@ -2,7 +2,10 @@ package org.uji.agile.contactsbook;
 
 public class ContactsBook {
 
-	public static PhoneService phoneService;
+	private static PhoneService phoneService;
+
+	private ContactsBook() {
+	}
 	
 	public static void setPhoneService(PhoneService service) {
 		phoneService = service;

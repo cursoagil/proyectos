@@ -9,7 +9,7 @@ public class Person implements StorageSerializable {
 	
 	private String name;
 	
-	List<Phone> phones;
+	private List<Phone> phones;
 	
 	public Person() {
 		this.name = "";
