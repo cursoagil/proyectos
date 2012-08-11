@@ -26,7 +26,6 @@ public class Phone implements Serializable {
 		return phoneInstances.get(phone);
 	}
 	
-
 	@Override
 	public int hashCode() {
 		return Integer.valueOf(this.phonenumber);
@@ -43,6 +42,10 @@ public class Phone implements Serializable {
 	}
 	
 	public String toString() {
+		return phonenumber;
+	}
+
+	public String getPhone() {
 		return phonenumber;
 	}
 }
