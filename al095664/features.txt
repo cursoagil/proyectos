@@ -5,9 +5,9 @@ El código del proyecto se debe presentar tras hacer un fork del repositorio de 
 El proyecto debe incorporar un pom.xml de configuración de Apache Maven que permita la compilación, ejecución de los tests y generación de JavaDocs del proyecto.
 Todas las historias de usuario del proyecto deben estar dadas de alta en JIRA
 Todo el código tiene que estar escrito con TDD.
-Cada user story debe tener al menos una prueba de aceptación.
-Pasos necesarios para poner el sistema en integración continua, explicados.
-La complejidad en los métodos debe ser como máximo de 5.
+Cada user story debe tener implementado al menos un escenario de prueba de aceptación.
+Explicar cómo pondríais el proyecto en integración continua, qué cosas son necesarias automatizar y cual es el valor que aporta cada cosa que se automatiza.
+La complejidad ciclomática en los métodos debe ser como máximo de 5.
 El código debe:
 Estar en un idioma, spanglish no vale.
 Estar limpio de comentarios
