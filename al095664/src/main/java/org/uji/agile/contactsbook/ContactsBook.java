@@ -8,6 +8,8 @@ public final class ContactsBook {
 	private static PhoneValidator phoneValidator;
 	private static Storage storage;
 	
+	private ContactsBook() {}
+	
 	public static void setPhoneService(PhoneService service) {
 		phoneService = service;
 	}
