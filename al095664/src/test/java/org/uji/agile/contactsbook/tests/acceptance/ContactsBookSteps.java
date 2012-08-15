@@ -1,9 +1,15 @@
 package org.uji.agile.contactsbook.tests.acceptance;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
@@ -15,39 +21,33 @@ import org.uji.agile.contactsbook.Phone;
 import org.uji.agile.contactsbook.PhoneService;
 import org.uji.agile.contactsbook.PhoneValidator;
 import org.uji.agile.contactsbook.SpanishPhoneValidator;
-import org.uji.agile.contactsbook.Storage;
-
-import static org.junit.Assert.*;
-import static org.junit.matchers.JUnitMatchers.*;
-import static org.mockito.Mockito.*;
 
 public class ContactsBookSteps {
 
+	protected SpanishPhoneValidator phoneValidatorMock;
+	protected PhoneService phoneServiceMock;
+	protected FileStorage storage;
+	protected List<String> phonesAsStrings;
+
 	private static final String TEST_PHONE_NUMBER = "606012347";
 	private static final String TEST_NONVALID_PHONE_NUMBER = "111111111";
-	private PhoneValidator phoneValidatorMock;
-	private PhoneService phoneServiceMock;
-	private Storage storage;
-	private List<String> phonesAsStrings;
-	
 	
 	@BeforeScenario
-	public void beforeScenario() {
+	public void setUp() {
 		phoneValidatorMock = mock(SpanishPhoneValidator.class);
 		phoneServiceMock = mock(PhoneService.class);
 		storage = new FileStorage();
-		when(phoneValidatorMock.validate(Phone.create(TEST_PHONE_NUMBER)))
-		.thenReturn(true);
 		
-		phonesAsStrings = new ArrayList<String>();
+		when(phoneValidatorMock.validate(Phone.create(TEST_PHONE_NUMBER))).thenReturn(true);
 		
 		ContactsBook.setPhoneValidator(phoneValidatorMock);
 		ContactsBook.setPhoneService(phoneServiceMock);
 		ContactsBook.setStorage(storage); 
-	}
-	
-	@AfterScenario
-	public void afterScenario() {
+		
+		phonesAsStrings = new ArrayList<String>();
+		phonesAsStrings.add("653423121");
+		phonesAsStrings.add("912354232");
+		
 		storage.removeAll();
 	}
 	
@@ -66,7 +66,11 @@ public class ContactsBookSteps {
 		for(String phoneString : phonesAsStrings) {
 			ContactsBook.addPhone(phoneString).to(personName);
 		}
-		
+	}
+	
+	@Given("a person with the person name \"$personName\"")
+	public void personWithPersonNameAndPhoneNumbers(String personName) {
+		ContactsBook.addPerson(personName);
 	}
 	
 	@When("a valid phone number is added to the person \"$personName\"") 
@@ -83,6 +87,15 @@ public class ContactsBookSteps {
 	public void phoneIsValid() {
 		PhoneValidator phoneValidator = new SpanishPhoneValidator();
 		assertTrue(phoneValidator.validate(Phone.create(TEST_PHONE_NUMBER)));
+	}
+	
+	@When("\"$personName\" has some phones")
+	public void personHasSomePhones(String personName) throws PersonNotExistsException {
+		for (String phoneAsString : phonesAsStrings) {
+			when(phoneValidatorMock.validate(Phone.create(phoneAsString)))
+								   .thenReturn(true);
+			ContactsBook.addPhone(phoneAsString).to(personName);
+		}
 	}
 	
 	@Then("the person called \"$personName\" is stored")
@@ -132,6 +145,12 @@ public class ContactsBookSteps {
 		assertFalse(phones.contains(Phone.create(TEST_NONVALID_PHONE_NUMBER)));
 	}
 	
+	@Then("the phones can be recovered using \"$personName\" as his identifier")
+	public void phonesCanBeRecoveredUsingHisPersonNameAsIdentifier(String personName) throws PersonNotExistsException {
+		List<Phone> phones = ContactsBook.getPhonesFromPersonName(personName);
+		for(String s : phonesAsStrings) {
+			assertThat(phones, hasItem(Phone.create(s)));	
+		}
+	}
 	
 }
-

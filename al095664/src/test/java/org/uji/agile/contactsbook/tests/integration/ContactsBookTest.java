@@ -1,5 +1,8 @@
 package org.uji.agile.contactsbook.tests.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,5 +72,26 @@ public class ContactsBookTest {
 	public void addPersonTakesReadyPersonInTheSystem() throws PersonNotExistsException  {
 		ContactsBook.addPerson("Anyone");
 		ContactsBook.getPhonesFromPersonName("Anyone");
+	}
+	
+	@Test
+	public void addPhoneAfterAddedPersonStoresHisPhonesToo() throws PersonNotExistsException {
+		String personName = "Someone";
+		List<String> phoneStrings = new ArrayList<String>();
+		phoneStrings.add("656656656");
+		phoneStrings.add("656656657");
+		
+		ContactsBook.addPerson(personName);
+		
+		for(String phoneString : phoneStrings) {
+			when(mockPhoneValidator.validate(Phone.create(phoneString))).thenReturn(true);
+			ContactsBook.addPhone(phoneString).to(personName);
+		}
+		
+		List<Phone> retrievedPhones = ContactsBook.getPhonesFromPersonName(personName);
+		
+		for(String phoneString : phoneStrings ) {
+			assertThat(retrievedPhones, hasItem(Phone.create(phoneString)));
+		}
 	}
 }
