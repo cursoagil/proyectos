@@ -2,7 +2,7 @@ package org.uji.agile.contactsbook;
 
 import java.util.List;
 
-public class ContactsBook {
+public final class ContactsBook {
 
 	private static PhoneService phoneService;
 	private static PhoneValidator phoneValidator;
@@ -50,8 +50,7 @@ public class ContactsBook {
 
 	private static Phone getPhoneFromPendingData(String pendingData) {
 		String phoneNumber = pendingData;
-		Phone phone = Phone.create(phoneNumber);
-		return phone;
+		return Phone.create(phoneNumber);
 	}
 
 	private static Person getPersonFromIdentifier(String personName) {
