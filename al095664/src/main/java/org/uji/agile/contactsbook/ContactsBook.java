@@ -30,13 +30,31 @@ public class ContactsBook {
 	}
 
 	public static ContactsBook addPhone(String phonenumber) {
-		return new ContactsBook(phonenumber);
+		if (phoneValidator.validate(Phone.create(phonenumber))) {
+			return new ContactsBook(phonenumber);	
+		}
+		return new ContactsBook("");
+	}
+	
+	private boolean hasPendingData() {
+		return !pendingData.equals("");
 	}
 	
 	public void to(String personName) {
-		String phoneNumber = this.pendingData;
+		if (!hasPendingData()) return;
+		Phone phone = getPhoneFromPendingData(pendingData);
+		Person person = getPersonFromIdentifier(personName);
+		person.addPhone(phone);
+		storage.save(person);
+	}
+
+	private static Phone getPhoneFromPendingData(String pendingData) {
+		String phoneNumber = pendingData;
 		Phone phone = Phone.create(phoneNumber);
-		
+		return phone;
+	}
+
+	private static Person getPersonFromIdentifier(String personName) {
 		Person person = null;
 		if (storage.exists(personName)) {
 			try {
@@ -48,18 +66,27 @@ public class ContactsBook {
 		else {
 			person = new Person(personName);
 		}
-		person.addPhone(phone);
-		storage.save(person);
+		return person;
 	}
 
 	public static void setStorage(Storage iStorage) {
 		storage = iStorage;
 	}
 
-	public static List<Phone> getPhonesFromPersonName(String personName) throws NotFoundIdentifierException {
+	public static List<Phone> getPhonesFromPersonName(String personName) throws PersonNotExistsException {
 		Person person = null;
-		person = (Person)storage.read(personName);	
+		try {
+			person = (Person)storage.read(personName);		
+		}
+		catch (NotFoundIdentifierException ex) {
+			throw new PersonNotExistsException();
+		}
 		return person.getPhones();
+	}
+
+	public static void addPerson(String personIdentifier) {
+		Person person = new Person(personIdentifier);
+		storage.save(person);
 	}
 	
 }

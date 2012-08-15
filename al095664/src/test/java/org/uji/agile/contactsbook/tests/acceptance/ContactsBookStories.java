@@ -24,8 +24,7 @@ public class ContactsBookStories extends JUnitStories {
         .useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))
         .useStepMonitor(new PrintStreamStepMonitor())
         ;
-        /* TODO: depecrated, try to change for useStepsFactory */
-        addSteps(new InstanceStepsFactory(configuration,new ContactsBookSteps()).createCandidateSteps());
+        useStepsFactory(new InstanceStepsFactory(configuration,new ContactsBookSteps()));
      }
 
 	@Override

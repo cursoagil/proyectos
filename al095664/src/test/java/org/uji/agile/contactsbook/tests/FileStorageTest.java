@@ -11,11 +11,11 @@ import static org.junit.Assert.*;
 
 public class FileStorageTest {
 
-	private FileStorage storage;
+	private FileStorage fileStorage;
 
 	@Before
 	public void setUp() {
-		storage = new FileStorage();
+		fileStorage = new FileStorage();
 	}
 	
 	@Test
@@ -23,7 +23,7 @@ public class FileStorageTest {
 		Person person = new Person();
 		person.addPhone(Phone.create("676767676"));
 		
-		boolean result = storage.save(person);
+		boolean result = fileStorage.save(person);
 		
 		assertTrue(result);
 	}
@@ -34,13 +34,13 @@ public class FileStorageTest {
 		
 		person.addPhone(Phone.create("600600600"));
 		
-		boolean result = storage.save(person);
+		boolean result = fileStorage.save(person);
 		
 		assertTrue(result);
 		
 		Person recoveredPerson = null;
 		try {
-			recoveredPerson = (Person)storage.read("Manolo Domínguez");
+			recoveredPerson = (Person)fileStorage.read("Manolo Domínguez");
 		} catch (NotFoundIdentifierException e) {
 			Assert.fail();
 		}
@@ -52,12 +52,19 @@ public class FileStorageTest {
 	
 	@Test
 	public void existsShouldReturnFalseWhenThePersonHasntBeenStored() {
-		assertFalse(storage.exists("Aimar"));
+		assertFalse(fileStorage.exists("Aimar"));
 	}
 	
 	@Test
 	public void existsShouldReturnTrueWhenThePersonHasBeenSavedPreviously() {
-		storage.save(new Person("José María Ruíz"));
-		assertTrue(storage.exists("José María Ruíz"));
+		fileStorage.save(new Person("José María Ruíz"));
+		assertTrue(fileStorage.exists("José María Ruíz"));
+	}
+	
+	@Test
+	public void removeAllShouldDeleteAnyData() {
+		fileStorage.save(new Person("José María"));
+		fileStorage.removeAll();
+		assertFalse(fileStorage.exists("José María"));
 	}
 }
