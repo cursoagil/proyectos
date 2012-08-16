@@ -10,28 +10,43 @@ public class Person implements StorageSerializable {
 	private String name;
 	
 	private List<Phone> phones;
+	private List<Email> emails;
 	
 	public Person() {
 		this.name = "";
-		phones = new ArrayList<Phone>();
-	}
-	
-	public Person(String name) {
-		this.name = name;
-		phones = new ArrayList<Phone>();
-	}
-	
-	public void addPhone(Phone phone) {
-		phones.add(phone);
+		initLists();
 	}
 
-	public List<Phone> getPhones() {
-		return phones;
+	public Person(String name) {
+		this.name = name;
+		initLists();
+	}
+	
+	private void initLists() {
+		phones = new ArrayList<Phone>();
+		emails = new ArrayList<Email>();
 	}
 
 	@Override
 	public String getIdentifier() {
 		return name;
+	}
+
+	
+	public void addPhone(Phone phone) {
+		phones.add(phone);
+	}
+
+	public void addEmail(Email email) {
+		emails.add(email);
+	}
+
+	public List<Phone> getPhones() {
+		return phones;
+	}
+	
+	public List<Email> getEmails() {
+		return emails;
 	}
 
 }

@@ -17,4 +17,12 @@ public class PhoneTest {
 		assertFalse(new Phone("706606606").equals( new Phone("606606606") ));
 	}
 	
+	@Test
+	public void equalsReturnsTwoForDifferentPhonesWithTheSamePhoneNumber() {
+		Phone phone = new Phone("600343212");
+		Phone equalPhone = new Phone("600343212");
+		
+		assertTrue(phone.equals(equalPhone));
+		assertTrue(equalPhone.equals(phone));
+	}
 }
