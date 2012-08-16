@@ -1,9 +1,8 @@
 package org.uji.agile.contactsbook;
 
-public class EmailContactsBookPackage implements ContactsBookPackage {
+public class EmailContactsBookPackage extends ContactsBookPackage {
 
 	private String emailStr;
-	private Storage storage;
 
 	public EmailContactsBookPackage(String emailStr, Storage storage) {
 		this.emailStr = emailStr;

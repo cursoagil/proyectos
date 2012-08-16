@@ -1,5 +1,23 @@
 package org.uji.agile.contactsbook;
 
-public interface ContactsBookPackage {
-	public void to(String personName);
+public abstract class ContactsBookPackage {
+	
+	protected Storage storage;
+	
+	public abstract void to(String personName);
+	
+	protected Person getPersonFromIdentifier(String personName) {
+		Person person = null;
+		if (storage.exists(personName)) {
+			try {
+				person = (Person)storage.read(personName);
+			} catch (NotFoundIdentifierException e) {
+				e.printStackTrace();
+			}	
+		}
+		else {
+			person = new Person(personName);
+		}
+		return person;
+	}
 }

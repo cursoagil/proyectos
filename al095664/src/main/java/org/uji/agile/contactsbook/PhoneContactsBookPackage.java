@@ -1,44 +1,22 @@
 package org.uji.agile.contactsbook;
 
-public class PhoneContactsBookPackage implements ContactsBookPackage {
-	private String phoneStr;
-	private Storage storage;
+public class PhoneContactsBookPackage extends ContactsBookPackage {
+	private String phoneNumber;
 	
 	public PhoneContactsBookPackage(String phoneStr, Storage storage) {
-		this.phoneStr = phoneStr;
+		this.phoneNumber = phoneStr;
 		this.storage = storage;
 	}
 	
-	private boolean hasPendingData() {
-		return !phoneStr.equals("");
-	}
-	
 	public void to(String personName) {
-		if (!hasPendingData()) return;
-		Phone phone = getPhoneFromPendingData(phoneStr);
+		Phone phone = getPhoneFromPendingData();
 		Person person = getPersonFromIdentifier(personName);
 		person.addPhone(phone);
 		storage.save(person);
 	}
 
-	private Phone getPhoneFromPendingData(String pendingData) {
-		String phoneNumber = pendingData;
+	private Phone getPhoneFromPendingData() {
 		return Phone.create(phoneNumber);
-	}
-
-	private Person getPersonFromIdentifier(String personName) {
-		Person person = null;
-		if (storage.exists(personName)) {
-			try {
-				person = (Person)storage.read(personName);
-			} catch (NotFoundIdentifierException e) {
-				e.printStackTrace();
-			}	
-		}
-		else {
-			person = new Person(personName);
-		}
-		return person;
 	}
 
 }

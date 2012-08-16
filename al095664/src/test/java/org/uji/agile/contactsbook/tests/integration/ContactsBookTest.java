@@ -8,9 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uji.agile.contactsbook.ContactsBook;
 import org.uji.agile.contactsbook.Email;
+import org.uji.agile.contactsbook.EmailValidator;
 import org.uji.agile.contactsbook.FileStorage;
-import org.uji.agile.contactsbook.NotFoundIdentifierException;
-import org.uji.agile.contactsbook.PersonNotExistsException;
+import org.uji.agile.contactsbook.NotExistsPersonException;
 import org.uji.agile.contactsbook.Phone;
 import org.uji.agile.contactsbook.PhoneService;
 import org.uji.agile.contactsbook.PhoneValidator;
@@ -36,7 +36,7 @@ public class ContactsBookTest {
 		ContactsBook.setPhoneService(mockPhoneService);
 		ContactsBook.setPhoneValidator(mockPhoneValidator);
 		ContactsBook.setStorage(fileStorage);
-		
+		ContactsBook.setEmailValidator(new EmailValidator() );
 	}
 
 	@After
@@ -65,19 +65,19 @@ public class ContactsBookTest {
 	}
 	
 	@Test
-	public void addPhoneAllowsToAddPhonesToPerson() throws PersonNotExistsException  {
+	public void addPhoneAllowsToAddPhonesToPerson() throws NotExistsPersonException  {
 		ContactsBook.addPhone("606912312").to("Jaime");
 		assertThat(ContactsBook.getPhonesFromPersonName("Jaime"), hasItem(Phone.create("606912312")));
 	}
 	
 	@Test
-	public void addPersonTakesReadyPersonInTheSystem() throws PersonNotExistsException  {
+	public void addPersonTakesReadyPersonInTheSystem() throws NotExistsPersonException  {
 		ContactsBook.addPerson("Anyone");
 		ContactsBook.getPhonesFromPersonName("Anyone");
 	}
 	
 	@Test
-	public void addPhoneAfterAddedPersonStoresHisPhonesToo() throws PersonNotExistsException {
+	public void addPhoneAfterAddedPersonStoresHisPhonesToo() throws NotExistsPersonException {
 		String personName = "Someone";
 		List<String> phoneStrings = new ArrayList<String>();
 		phoneStrings.add("656656656");
@@ -98,7 +98,7 @@ public class ContactsBookTest {
 	}
 	
 	@Test
-	public void getEmailsFromPersonNameReturnsTheEmailsItHadBeforeSaving() throws NotFoundIdentifierException {
+	public void getEmailsFromPersonNameReturnsTheEmailsItHadBeforeSaving() throws NotExistsPersonException {
 		String personName = "Someone";
 		String email = "email@domain.com";
 		
@@ -107,5 +107,17 @@ public class ContactsBookTest {
 		
 		assertThat(ContactsBook.getEmailsFromPersonName(personName), 
 				   hasItem(Email.create(email)));
+	}
+	
+	@Test
+	public void emailIsNotStoredIfItIsnotValid() throws NotExistsPersonException {
+		String personName = "Jorge";
+		String email = "jorgonor88@gmail";
+		
+		ContactsBook.addPerson(personName);
+		ContactsBook.addEmail(email).to(personName);
+
+		assertEquals(0, ContactsBook.getEmailsFromPersonName(personName).size());
+		
 	}
 }

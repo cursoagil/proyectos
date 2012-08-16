@@ -40,4 +40,7 @@ public class Email implements Serializable {
 		return this.email.equals(typedOtherEmail.email);
 	}
 	
+	public String getEmail() {
+		return email;
+	}
 }

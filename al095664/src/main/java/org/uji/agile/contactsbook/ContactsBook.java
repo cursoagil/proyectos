@@ -2,11 +2,14 @@ package org.uji.agile.contactsbook;
 
 import java.util.List;
 
+import org.uji.agile.contactsbook.EmailValidator;
+
 public final class ContactsBook {
 
 	private static PhoneService phoneService;
 	private static PhoneValidator phoneValidator;
 	private static Storage storage;
+	private static EmailValidator emailValidator;
 	
 	private ContactsBook() {}
 	
@@ -29,13 +32,13 @@ public final class ContactsBook {
 		}
 	}
 	
-	public static List<Phone> getPhonesFromPersonName(String personName) throws PersonNotExistsException {
+	public static List<Phone> getPhonesFromPersonName(String personName) throws NotExistsPersonException {
 		Person person = null;
 		try {
 			person = (Person)storage.read(personName);		
 		}
 		catch (NotFoundIdentifierException ex) {
-			throw new PersonNotExistsException();
+			throw new NotExistsPersonException();
 		}
 		return person.getPhones();
 	}
@@ -49,16 +52,28 @@ public final class ContactsBook {
 		if (phoneValidator.validate(Phone.create(phonenumber))) {
 			return new PhoneContactsBookPackage(phonenumber, storage);	
 		}
-		return new PhoneContactsBookPackage("", storage);
+		return new NullContactsBookPackage();
 	}
 
 	public static ContactsBookPackage addEmail(String email) {
-		return new EmailContactsBookPackage(email, storage);
+		if (emailValidator.validate(Email.create(email))) {
+			return new EmailContactsBookPackage(email, storage);	
+		}
+		return new NullContactsBookPackage();
 	}
 
-	public static List<Email> getEmailsFromPersonName(String personName) throws NotFoundIdentifierException {
-		Person person = (Person)storage.read(personName);
+	public static List<Email> getEmailsFromPersonName(String personName) throws NotExistsPersonException {
+		Person person;
+		try {
+			person = (Person)storage.read(personName);
+		} catch (NotFoundIdentifierException e) {
+			throw new NotExistsPersonException();
+		}
 		return person.getEmails();
+	}
+
+	public static void setEmailValidator(EmailValidator iEmailValidator) {
+		emailValidator = iEmailValidator;
 	}
 
 }
