@@ -45,11 +45,20 @@ public final class ContactsBook {
 		storage.save(person);
 	}
 	
-	public static ContactsBookData addPhone(String phonenumber) {
+	public static ContactsBookPackage addPhone(String phonenumber) {
 		if (phoneValidator.validate(Phone.create(phonenumber))) {
-			return new ContactsBookData(phonenumber, storage);	
+			return new PhoneContactsBookPackage(phonenumber, storage);	
 		}
-		return new ContactsBookData("", storage);
+		return new PhoneContactsBookPackage("", storage);
+	}
+
+	public static ContactsBookPackage addEmail(String email) {
+		return new EmailContactsBookPackage(email, storage);
+	}
+
+	public static List<Email> getEmailsFromPersonName(String personName) throws NotFoundIdentifierException {
+		Person person = (Person)storage.read(personName);
+		return person.getEmails();
 	}
 
 }

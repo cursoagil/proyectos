@@ -7,7 +7,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uji.agile.contactsbook.ContactsBook;
+import org.uji.agile.contactsbook.Email;
 import org.uji.agile.contactsbook.FileStorage;
+import org.uji.agile.contactsbook.NotFoundIdentifierException;
 import org.uji.agile.contactsbook.PersonNotExistsException;
 import org.uji.agile.contactsbook.Phone;
 import org.uji.agile.contactsbook.PhoneService;
@@ -93,5 +95,17 @@ public class ContactsBookTest {
 		for(String phoneString : phoneStrings ) {
 			assertThat(retrievedPhones, hasItem(Phone.create(phoneString)));
 		}
+	}
+	
+	@Test
+	public void getEmailsFromPersonNameReturnsTheEmailsItHadBeforeSaving() throws NotFoundIdentifierException {
+		String personName = "Someone";
+		String email = "email@domain.com";
+		
+		ContactsBook.addPerson(personName);
+		ContactsBook.addEmail(email).to(personName);
+		
+		assertThat(ContactsBook.getEmailsFromPersonName(personName), 
+				   hasItem(Email.create(email)));
 	}
 }

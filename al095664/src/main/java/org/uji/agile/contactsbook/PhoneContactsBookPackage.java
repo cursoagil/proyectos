@@ -1,21 +1,21 @@
 package org.uji.agile.contactsbook;
 
-public class ContactsBookData {
-	private String pendingData;
+public class PhoneContactsBookPackage implements ContactsBookPackage {
+	private String phoneStr;
 	private Storage storage;
 	
-	public ContactsBookData(String pendingData, Storage storage) {
-		this.pendingData = pendingData;
+	public PhoneContactsBookPackage(String phoneStr, Storage storage) {
+		this.phoneStr = phoneStr;
 		this.storage = storage;
 	}
 	
 	private boolean hasPendingData() {
-		return !pendingData.equals("");
+		return !phoneStr.equals("");
 	}
 	
 	public void to(String personName) {
 		if (!hasPendingData()) return;
-		Phone phone = getPhoneFromPendingData(pendingData);
+		Phone phone = getPhoneFromPendingData(phoneStr);
 		Person person = getPersonFromIdentifier(personName);
 		person.addPhone(phone);
 		storage.save(person);
