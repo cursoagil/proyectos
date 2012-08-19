@@ -58,7 +58,7 @@ public class ContactsBookTest extends ContactsBookTestSuiteTemplate {
 	@Test
 	public void addPhoneAllowsToAddPhonesToPerson() throws NotExistsPersonException  {
 		ContactsBook.addPhone("606912312").to("Jaime");
-		assertThat(ContactsBook.getPhonesFromPersonName("Jaime"), hasItem(Phone.create("606912312")));
+		assertThat(ContactsBook.getPhonesFromPersonName("Jaime"), hasItem("606912312"));
 	}
 	
 	@Test
@@ -81,10 +81,10 @@ public class ContactsBookTest extends ContactsBookTestSuiteTemplate {
 			ContactsBook.addPhone(phoneString).to(personName);
 		}
 		
-		List<Phone> retrievedPhones = ContactsBook.getPhonesFromPersonName(personName);
+		List<String> retrievedPhones = ContactsBook.getPhonesFromPersonName(personName);
 		
 		for(String phoneString : phoneStrings ) {
-			assertThat(retrievedPhones, hasItem(Phone.create(phoneString)));
+			assertThat(retrievedPhones, hasItem(phoneString));
 		}
 	}
 	
@@ -97,7 +97,7 @@ public class ContactsBookTest extends ContactsBookTestSuiteTemplate {
 		ContactsBook.addEmail(email).to(personName);
 		
 		assertThat(ContactsBook.getEmailsFromPersonName(personName), 
-				   hasItem(Email.create(email)));
+				   hasItem(email));
 	}
 	
 	@Test

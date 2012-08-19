@@ -1,55 +1,67 @@
 package org.uji.agile.contactsbook.tests.acceptance;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.junit.Assert.*;
+import static org.junit.matchers.JUnitMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.annotations.BeforeScenario;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.When;
-import org.uji.agile.contactsbook.ContactsBook;
-import org.uji.agile.contactsbook.NotExistsPersonException;
-import org.uji.agile.contactsbook.Phone;
-import org.uji.agile.contactsbook.PhoneValidator;
-import org.uji.agile.contactsbook.SpanishPhoneValidator;
+import org.jbehave.core.annotations.*;
+import org.uji.agile.contactsbook.*;
 import org.uji.agile.contactsbook.tests.ContactsBookTestSuiteTemplate;
 
 public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 
-	protected List<String> phonesAsStrings;
-
 	private static final String TEST_PHONE_NUMBER = "606012347";
 	private static final String TEST_NONVALID_PHONE_NUMBER = "111111111";
+	private static final String VALID_EMAIL = "jorgonor88@gmail.com";
+	
+	private EmailValidator realEmailValidator;
+	
+	private List<String> emailsAsStrings;
+	protected List<String> phonesAsStrings;
+	private String usedEmail;
 	
 	@BeforeScenario
 	public void beforeScenario() {
 		setUpContactsBook();
+		setUpComponents();
+		setUpTestValues();
 		truncateStorage();
+		clearScenarioVariables();
+	}
+	
+	protected void setUpComponents() {
+		realEmailValidator = new EmailValidator();
+	}
+	
+	protected void setUpTestValues() {
+		phonesAsStrings = new ArrayList<String>();
+		phonesAsStrings.add("653423121");
+		phonesAsStrings.add("912354232");
+	
+		emailsAsStrings = new ArrayList<String>();
+		emailsAsStrings.add("michael@somedomain.com");
+		emailsAsStrings.add("jamie@somedomain.com");
 	}
 	
 	protected void truncateStorage() {
 		mockFileStorage.removeAll();
 	}
 	
+	protected void clearScenarioVariables() {
+		usedEmail = "";
+	}
 	
 	@Override
 	protected void initMocks() {
 		super.initMocks();
-		mockPhoneValidator = mock(SpanishPhoneValidator.class, CALLS_REAL_METHODS);		
 	}
 	
 	@Override
 	protected void initMocksBehaviour() {
-		phonesAsStrings = new ArrayList<String>();
-		phonesAsStrings.add("653423121");
-		phonesAsStrings.add("912354232");
+		mockPhoneValidator = mock(SpanishPhoneValidator.class, CALLS_REAL_METHODS);	
 	}
 	
 	@Given("a non-existing person identified by \"$personName\"")
@@ -66,6 +78,14 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 		
 		for(String phoneString : phonesAsStrings) {
 			ContactsBook.addPhone(phoneString).to(personName);
+		}
+	}
+	
+	@Given("a person identified by \"$personName\" with e-mails")
+	public void existingPersonWithEmailsIdentifiedBy(String personName) {
+		ContactsBook.addPerson(personName);
+		for(String emailStr: emailsAsStrings) {
+			ContactsBook.addEmail(emailStr).to(personName);
 		}
 	}
 	
@@ -99,6 +119,17 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 		}
 	}
 	
+	@When("a valid e-mail is added to the person \"$personName\"") 
+	public void validEmailAddedToPerson(String personName) {
+		usedEmail = VALID_EMAIL;
+		ContactsBook.addEmail(usedEmail).to(personName);
+	}
+	
+	@When("the e-mail is valid") 
+	public void theEmailIsValid() {
+	 	assertTrue(realEmailValidator.validate(Email.create(usedEmail)));
+	}
+	
 	@Then("the person called \"$personName\" is stored")
 	public void personIsCreated(String personName) {
 		try {
@@ -121,7 +152,6 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 		finally {
 			assertTrue(personNotExistsExceptionThrown);
 		}
-		
 	}
 	
 	@Then("the valid phone is validated") 
@@ -136,22 +166,49 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	
 	@Then("the phone is added to the person \"$personName\"")
 	public void phoneIsAddedToThePerson(String personName) throws NotExistsPersonException {
-		List<Phone> phones = ContactsBook.getPhonesFromPersonName(personName);
-		assertThat(phones, hasItem(Phone.create(TEST_PHONE_NUMBER)));
+		List<String> phones = ContactsBook.getPhonesFromPersonName(personName);
+		assertThat(phones, hasItem(TEST_PHONE_NUMBER));
 	}
 	
 	@Then("the phone is not added to the person \"$personName\"")
 	public void phoneIsNotAddedToThePerson(String personName) throws NotExistsPersonException {
-		List<Phone> phones = ContactsBook.getPhonesFromPersonName(personName);
-		assertFalse(phones.contains(Phone.create(TEST_NONVALID_PHONE_NUMBER)));
+		List<String> phones = ContactsBook.getPhonesFromPersonName(personName);
+		assertFalse(phones.contains(TEST_NONVALID_PHONE_NUMBER));
 	}
 	
 	@Then("the phones can be recovered using \"$personName\" as his identifier")
 	public void phonesCanBeRecoveredUsingHisPersonNameAsIdentifier(String personName) throws NotExistsPersonException {
-		List<Phone> phones = ContactsBook.getPhonesFromPersonName(personName);
-		for(String s : phonesAsStrings) {
-			assertThat(phones, hasItem(Phone.create(s)));	
+		List<String> phones = ContactsBook.getPhonesFromPersonName(personName);
+		for(String phoneStr : phonesAsStrings) {
+			assertThat(phones, hasItem(phoneStr));	
 		}
 	}
-
+	
+	@Then("the rest of phones are contained in the person \"$personName\"")
+	public void otherPhonesAreContainedYet(String personName) throws NotExistsPersonException {
+		List<String> phones = ContactsBook.getPhonesFromPersonName(personName);
+		for(String phoneStr : phonesAsStrings) {
+			assertThat(phones, hasItem(phoneStr));	
+		}
+	}
+	
+	@Then("the e-mail is validated")
+	public void emailIsValidated() {
+		verify(mockEmailValidator).validate(Email.create(usedEmail));
+	}
+	
+	@Then("the e-mail is added to the person \"$personName\"")
+	public void emailIsAddedToThePerson(String personName) throws NotExistsPersonException {
+		List<String> emails = ContactsBook.getEmailsFromPersonName(personName);
+		assertThat(emails, hasItem(usedEmail));
+	}
+	
+	@Then("the rest of e-mails are contained in the person \"$personName\"")
+	public void otherEmailsAreContainedYet(String personName) throws NotExistsPersonException
+	{
+		List<String> emails = ContactsBook.getEmailsFromPersonName(personName);
+		for(String emailStr : emailsAsStrings) {
+			assertThat(emails, hasItem(emailStr));
+		}
+	}
 }

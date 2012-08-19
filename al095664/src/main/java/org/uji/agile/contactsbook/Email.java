@@ -39,6 +39,11 @@ public class Email implements Serializable {
 		Email typedOtherEmail = (Email)otherEmail;
 		return this.email.equals(typedOtherEmail.email);
 	}
+
+	@Override
+	public String toString() {
+		return email;
+	}
 	
 	public String getEmail() {
 		return email;

@@ -1,5 +1,6 @@
 package org.uji.agile.contactsbook;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.uji.agile.contactsbook.EmailValidator;
@@ -33,17 +34,6 @@ public final class ContactsBook {
 		}
 	}
 	
-	public static List<Phone> getPhonesFromPersonName(String personName) throws NotExistsPersonException {
-		Person person = null;
-		try {
-			person = (Person)storage.read(personName);		
-		}
-		catch (NotFoundIdentifierException ex) {
-			throw new NotExistsPersonException();
-		}
-		return person.getPhones();
-	}
-
 	public static void addPerson(String personIdentifier) {
 		Person person = new Person(personIdentifier);
 		storage.save(person);
@@ -63,14 +53,38 @@ public final class ContactsBook {
 		return new NullContactsBookPackage();
 	}
 
-	public static List<Email> getEmailsFromPersonName(String personName) throws NotExistsPersonException {
+	public static List<String> getPhonesFromPersonName(String personName) throws NotExistsPersonException {
+		Person person = null;
+		try {
+			person = (Person)storage.read(personName);		
+		}
+		catch (NotFoundIdentifierException ex) {
+			throw new NotExistsPersonException();
+		}
+		
+		List<Phone> phones = person.getPhones();
+		List<String> result = new ArrayList<String>();
+		
+		for(Phone phone: phones) {
+			result.add(phone.getPhone());
+		}
+		return result;
+	}
+	
+	public static List<String> getEmailsFromPersonName(String personName) throws NotExistsPersonException {
 		Person person;
 		try {
 			person = (Person)storage.read(personName);
 		} catch (NotFoundIdentifierException e) {
 			throw new NotExistsPersonException();
 		}
-		return person.getEmails();
+		List<Email> emails = person.getEmails();
+		List<String> result = new ArrayList<String>();
+		
+		for(Email email: emails) {
+			result.add(email.getEmail());
+		}
+		return result;
 	}
 
 	public static void setEmailValidator(EmailValidator iEmailValidator) {
