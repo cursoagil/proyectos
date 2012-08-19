@@ -91,12 +91,12 @@ public final class ContactsBook {
 		emailValidator = iEmailValidator;
 	}
 
-	public static boolean sendEmail(String emailStr) {
+	public static boolean sendEmail(String emailStr, String topic, String body) {
 		Email email = Email.create(emailStr);
 		if (!emailValidator.validate(email)) {
 			return false;
 		}
-		return emailService.send(email);
+		return emailService.send(email, topic, body);
 	}
 
 	public static void setEmailService(EmailService iEmailService) {

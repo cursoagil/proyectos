@@ -27,7 +27,7 @@ public class ContactsBookTest extends ContactsBookTestSuiteTemplate {
 
 	protected void initMocksBehaviour() {
 		when(mockPhoneValidator.validate(Phone.create("606912312"))).thenReturn(true);
-		when(mockEmailService.send(Email.create(TEST_EMAIL_STR))).thenReturn(true);
+		when(mockEmailService.send(Email.create(TEST_EMAIL_STR), "Hello", "Hello World!")).thenReturn(true);
 	}
 	
 	@After
@@ -114,24 +114,25 @@ public class ContactsBookTest extends ContactsBookTestSuiteTemplate {
 	
 	@Test
 	public void sendEmailCallsSendOverTheEmailService() {
-		ContactsBook.sendEmail(TEST_EMAIL_STR);
-		verify(mockEmailService).send(Email.create(TEST_EMAIL_STR));
+		ContactsBook.sendEmail(TEST_EMAIL_STR, "Hello", "Hello World!");
+		verify(mockEmailService).send(Email.create(TEST_EMAIL_STR), "Hello", "Hello World!");
 		
 	}
 	
 	@Test
 	public void sendEmailValidatesEmail() {
-		ContactsBook.sendEmail(TEST_EMAIL_STR);
+		ContactsBook.sendEmail(TEST_EMAIL_STR, "Hello", "Hello World!");
 		verify(mockEmailValidator).validate(Email.create(TEST_EMAIL_STR));
 	}
 
 	@Test
 	public void sendEmailWhenEmailIsValidReturnsTrue() {
-		assertTrue(ContactsBook.sendEmail(TEST_EMAIL_STR));
+		assertTrue(ContactsBook.sendEmail(TEST_EMAIL_STR, "Hello", "Hello World!"));
 	}
 	
 	@Test
 	public void sendEmailWhenEmailIsNotValidReturnsFalse() {
-		assertFalse(ContactsBook.sendEmail("masdmasdas"));
+		assertFalse(ContactsBook.sendEmail("masdmasdas", "Hello", "Hello World!"));
 	}
+	
 }

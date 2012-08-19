@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 
 import org.uji.agile.contactsbook.ContactsBook;
 import org.uji.agile.contactsbook.EmailService;
+import org.uji.agile.contactsbook.EmailServiceImpl;
 import org.uji.agile.contactsbook.EmailValidator;
 import org.uji.agile.contactsbook.FileStorage;
 import org.uji.agile.contactsbook.PhoneService;
@@ -28,7 +29,7 @@ public abstract class ContactsBookTestSuiteTemplate {
 	protected void initMocks() {
 		mockPhoneService = mock(PhoneService.class);
 		mockPhoneValidator = mock(PhoneValidator.class);
-		mockEmailService = mock(EmailService.class);
+		mockEmailService = mock(EmailServiceImpl.class, CALLS_REAL_METHODS);
 		mockEmailValidator = mock(EmailValidator.class, CALLS_REAL_METHODS);
 		mockFileStorage = mock(FileStorage.class, CALLS_REAL_METHODS);
 	}

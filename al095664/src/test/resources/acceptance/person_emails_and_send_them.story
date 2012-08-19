@@ -24,3 +24,18 @@ When a non-valid e-mail is added to the person "Jose"
 And the e-mail is non-valid
 Then the e-mail is validated
 And the e-mail is not added to the person "Jose"
+
+Scenario: send an e-mail to a person e-mail with topic and body
+Given a person identified by "Jaime" with e-mails
+And a topic and the body are not empty
+When the e-mail is try to be sent to "Jaime" first email
+Then the e-mail sending result is "true" 
+
+Scenario: send an e-mail to a person e-mail with topic but without body
+Given a person identified by "Jaime" with e-mails
+And a topic not empty but body empty
+When the e-mail is try to be sent to "Jaime" first email
+Then the e-mail sending result is "false" 
+
+
+

@@ -23,6 +23,9 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	private List<String> emailsAsStrings;
 	protected List<String> phonesAsStrings;
 	private String usedEmail;
+	private String currentTopic;
+	private String currentBody;
+	private boolean sendEmailResult;
 	
 	@BeforeScenario
 	public void beforeScenario() {
@@ -53,6 +56,9 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	
 	protected void clearScenarioVariables() {
 		usedEmail = "";
+		currentBody = "";
+		currentTopic = "";
+		sendEmailResult = false;
 	}
 	
 	@Override
@@ -93,6 +99,18 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	@Given("a person with the person name \"$personName\"")
 	public void personWithPersonNameAndPhoneNumbers(String personName) {
 		ContactsBook.addPerson(personName);
+	}
+	
+	@Given("a topic and the body are not empty")
+	public void aTopicAndABodyAreNotEmpty() {
+		currentTopic = "Hi there";
+		currentBody = "Hello my name is Martha";
+	}
+	
+	@Given("a topic not empty but body empty")
+	public void aTopicNotEmptyButEmptyBody() {
+		currentTopic = "Hi there";
+		currentBody = "";
 	}
 	
 	@When("a valid phone number is added to the person \"$personName\"") 
@@ -140,6 +158,12 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	@When("the e-mail is non-valid")
 	public void theEmailIsNotValid() {
 	 	assertFalse(realEmailValidator.validate(Email.create(usedEmail)));
+	}
+	
+	@When("the e-mail is try to be sent to \"$personName\" first email")
+	public void tryToSendEmail(String personName) throws NotExistsPersonException {
+		List<String> emails = ContactsBook.getEmailsFromPersonName(personName);
+		sendEmailResult = ContactsBook.sendEmail(emails.get(0), currentTopic, currentBody);
 	}
 	
 	@Then("the person called \"$personName\" is stored")
@@ -229,4 +253,11 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 		assertFalse(ContactsBook.getEmailsFromPersonName(personName)
 				   .contains(NON_VALID_EMAIL));
 	}
+	
+	@Then("the e-mail sending result is \"$result\"")
+	public void emailIsSentResult(String sResult) {
+		boolean result = Boolean.valueOf(sResult);
+		assertEquals( sendEmailResult, result );
+	}
+	
 }
