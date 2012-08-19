@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uji.agile.contactsbook.ContactsBook;
 import org.uji.agile.contactsbook.Email;
+import org.uji.agile.contactsbook.EmailService;
 import org.uji.agile.contactsbook.EmailValidator;
 import org.uji.agile.contactsbook.FileStorage;
 import org.uji.agile.contactsbook.NotExistsPersonException;
@@ -22,21 +23,30 @@ import static org.mockito.Mockito.*;
 
 public class ContactsBookTest {
 
+	private static final String TEST_EMAIL_STR = "jorgonor88@gmail.com";
 	private PhoneService mockPhoneService;
 	private PhoneValidator mockPhoneValidator;
+	private EmailService mockEmailService;
 	private Storage fileStorage;
+	private EmailValidator mockEmailValidator;
+	
 	@Before
 	public void setUp() {
 		mockPhoneService = mock(PhoneService.class);
 		mockPhoneValidator = mock(PhoneValidator.class);
+		mockEmailService = mock(EmailService.class);
+		mockEmailValidator = mock(EmailValidator.class, CALLS_REAL_METHODS);
+		
 		when(mockPhoneValidator.validate(Phone.create("606912312"))).thenReturn(true);
-
+		when(mockEmailService.send(Email.create(TEST_EMAIL_STR))).thenReturn(true);
 		fileStorage = new FileStorage();
 		
+		
 		ContactsBook.setPhoneService(mockPhoneService);
+		ContactsBook.setEmailService(mockEmailService);
 		ContactsBook.setPhoneValidator(mockPhoneValidator);
 		ContactsBook.setStorage(fileStorage);
-		ContactsBook.setEmailValidator(new EmailValidator() );
+		ContactsBook.setEmailValidator(mockEmailValidator);
 	}
 
 	@After
@@ -119,5 +129,28 @@ public class ContactsBookTest {
 
 		assertEquals(0, ContactsBook.getEmailsFromPersonName(personName).size());
 		
+	}
+	
+	@Test
+	public void sendEmailCallsSendOverTheEmailService() {
+		ContactsBook.sendEmail(TEST_EMAIL_STR);
+		verify(mockEmailService).send(Email.create(TEST_EMAIL_STR));
+		
+	}
+	
+	@Test
+	public void sendEmailValidatesEmail() {
+		ContactsBook.sendEmail(TEST_EMAIL_STR);
+		verify(mockEmailValidator).validate(Email.create(TEST_EMAIL_STR));
+	}
+
+	@Test
+	public void sendEmailWhenEmailIsValidReturnsTrue() {
+		assertTrue(ContactsBook.sendEmail(TEST_EMAIL_STR));
+	}
+	
+	@Test
+	public void sendEmailWhenEmailIsNotValidReturnsFalse() {
+		assertFalse(ContactsBook.sendEmail("masdmasdas"));
 	}
 }

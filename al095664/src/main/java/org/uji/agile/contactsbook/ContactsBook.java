@@ -10,6 +10,7 @@ public final class ContactsBook {
 	private static PhoneValidator phoneValidator;
 	private static Storage storage;
 	private static EmailValidator emailValidator;
+	private static EmailService emailService;
 	
 	private ContactsBook() {}
 	
@@ -74,6 +75,19 @@ public final class ContactsBook {
 
 	public static void setEmailValidator(EmailValidator iEmailValidator) {
 		emailValidator = iEmailValidator;
+	}
+
+	public static boolean sendEmail(String emailStr) {
+		Email email = Email.create(emailStr);
+		if (!emailValidator.validate(email)) {
+			return false;
+		}
+		return emailService.send(email);
+	}
+
+	public static void setEmailService(EmailService iEmailService) {
+		emailService = iEmailService;
+		
 	}
 
 }
