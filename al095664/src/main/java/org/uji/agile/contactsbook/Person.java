@@ -11,7 +11,8 @@ public class Person implements StorageSerializable {
 	
 	private List<Phone> phones;
 	private List<Email> emails;
-	
+	private List<Address> addresses;
+	 
 	public Person() {
 		this.name = "";
 		initLists();
@@ -25,6 +26,7 @@ public class Person implements StorageSerializable {
 	private void initLists() {
 		phones = new ArrayList<Phone>();
 		emails = new ArrayList<Email>();
+		addresses = new ArrayList<Address>();
 	}
 
 	@Override
@@ -41,12 +43,20 @@ public class Person implements StorageSerializable {
 		emails.add(email);
 	}
 
+	public void addAddress(Address address) {
+		addresses.add(address);
+	}
+	
 	public List<Phone> getPhones() {
 		return phones;
 	}
 	
 	public List<Email> getEmails() {
 		return emails;
+	}
+
+	public List<Address> getAddresses() {
+		return addresses;
 	}
 
 }
