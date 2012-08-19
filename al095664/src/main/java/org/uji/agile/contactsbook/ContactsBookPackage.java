@@ -4,7 +4,7 @@ public abstract class ContactsBookPackage {
 	
 	protected Storage storage;
 	
-	public abstract void to(String personName);
+	public abstract ContactsBookPackage to(String personName);
 	
 	protected Person getPersonFromIdentifier(String personName) {
 		Person person = null;
@@ -19,5 +19,9 @@ public abstract class ContactsBookPackage {
 			person = new Person(personName);
 		}
 		return person;
+	}
+	
+	public ContactsBookPackage and(String personName) {
+		return to(personName);
 	}
 }

@@ -10,7 +10,7 @@ public class EmailContactsBookPackage extends ContactsBookPackage {
 	}
 	
 	@Override
-	public void to(String personName) {
+	public ContactsBookPackage to(String personName) {
 		Person person = null;
 		try {
 			person = (Person)storage.read(personName);
@@ -19,6 +19,7 @@ public class EmailContactsBookPackage extends ContactsBookPackage {
 		}
 		person.addEmail(Email.create(emailStr));
 		storage.save(person);
+		return this;
 	}
 
 }

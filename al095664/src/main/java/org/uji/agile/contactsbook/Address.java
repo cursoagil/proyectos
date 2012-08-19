@@ -26,5 +26,9 @@ public class Address implements Serializable{
 	public int hashCode() {
 		return address.hashCode();
 	}
+
+	public String getAddress() {
+		return address;
+	}
 	
 }

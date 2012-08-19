@@ -8,11 +8,12 @@ public class PhoneContactsBookPackage extends ContactsBookPackage {
 		this.storage = storage;
 	}
 	
-	public void to(String personName) {
+	public ContactsBookPackage to(String personName) {
 		Phone phone = getPhoneFromPendingData();
 		Person person = getPersonFromIdentifier(personName);
 		person.addPhone(phone);
 		storage.save(person);
+		return this;
 	}
 
 	private Phone getPhoneFromPendingData() {

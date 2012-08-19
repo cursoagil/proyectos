@@ -17,6 +17,7 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	private static final String TEST_NONVALID_PHONE_NUMBER = "111111111";
 	private static final String VALID_EMAIL = "jorgonor88@gmail.com";
 	private static final String NON_VALID_EMAIL = "aasd@somedomain.";
+	private static final String TEST_ADDRESS = "C/ Martin Fowler nº 1";
 	
 	private EmailValidator realEmailValidator;
 	
@@ -144,7 +145,7 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 		ContactsBook.addEmail(usedEmail).to(personName);
 	}
 	
-	@When("a non-valid e-mail is added to the person \"personName\"")
+	@When("a non-valid e-mail is added to the person \"$personName\"")
 	public void nonValidEmailAddedToPerson(String personName) {
 		usedEmail = NON_VALID_EMAIL;
 		ContactsBook.addEmail(usedEmail).to(personName);
@@ -164,6 +165,18 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	public void tryToSendEmail(String personName) throws NotExistsPersonException {
 		List<String> emails = ContactsBook.getEmailsFromPersonName(personName);
 		sendEmailResult = ContactsBook.sendEmail(emails.get(0), currentTopic, currentBody);
+	}
+	
+	@When("an address is assigned to \"$personName\"")
+	public void addAddressTo(String personName) {
+		ContactsBook.addAddress(TEST_ADDRESS).to(personName);
+	}
+
+	@When("an address is assigned to Jose and Jaime and Jorge")
+	public void addAddressMultiple() {
+		ContactsBook.addAddress(TEST_ADDRESS).to("Jose")
+											 .and("Jaime")
+											 .and("Jorge");
 	}
 	
 	@Then("the person called \"$personName\" is stored")
@@ -258,6 +271,14 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	public void emailIsSentResult(String sResult) {
 		boolean result = Boolean.valueOf(sResult);
 		assertEquals( sendEmailResult, result );
+	}
+	
+	@Then("the person \"$personName\" contains the address") 
+	public void personContainsTheAddress(String personName) throws NotExistsPersonException {
+		List<String> addresses = 
+			ContactsBook.getAddressesFromPersonName(personName);
+
+		assertThat(addresses, hasItem(TEST_ADDRESS));
 	}
 	
 }

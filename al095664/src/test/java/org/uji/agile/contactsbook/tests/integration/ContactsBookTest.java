@@ -135,4 +135,13 @@ public class ContactsBookTest extends ContactsBookTestSuiteTemplate {
 		assertFalse(ContactsBook.sendEmail("masdmasdas", "Hello", "Hello World!"));
 	}
 	
+	@Test
+	public void addAddressShouldStoreAddress() throws NotExistsPersonException {
+		String personName = "Jaime";
+		String address = "C/ La Huerta nº 1";
+		ContactsBook.addAddress(address).to(personName);
+		
+		assertThat(ContactsBook.getAddressesFromPersonName(personName), hasItem(address));
+	}
+	
 }
