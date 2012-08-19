@@ -67,4 +67,12 @@ public class FileStorageTest {
 		fileStorage.removeAll();
 		assertFalse(fileStorage.exists("José María"));
 	}
+	
+	@Test
+	public void addressCanBeStoredWithHisRelatedPerson() {
+		Person person = new Person("José María");
+		person.addAddress(new Address("C/ Los Angeles nº 23"));
+		fileStorage.save(person);
+	}
+	
 }
