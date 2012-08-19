@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.uji.agile.contactsbook.*;
 
 import static org.junit.Assert.*;
+import static org.junit.matchers.JUnitMatchers.*;
 
 public class FileStorageTest {
 
@@ -71,8 +72,17 @@ public class FileStorageTest {
 	@Test
 	public void addressCanBeStoredWithHisRelatedPerson() {
 		Person person = new Person("José María");
-		person.addAddress(new Address("C/ Los Angeles nº 23"));
+		person.addAddress(Address.create("C/ Los Angeles nº 23"));
 		fileStorage.save(person);
 	}
 	
+	@Test
+	public void addressCanBeRecoveredFromHisRelatedPerson() throws NotFoundIdentifierException {
+		Person person = new Person("José María");
+		person.addAddress(Address.create("C/ Los Angeles nº 23"));
+		fileStorage.save(person);
+		Person retrievedPerson = (Person)fileStorage.read("José María");
+		assertThat(retrievedPerson.getAddresses(), hasItem(Address.create("C/ Los Angeles nº 23")));
+		assertEquals(1,retrievedPerson.getAddresses().size());
+	}
 }
