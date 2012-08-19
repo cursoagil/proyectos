@@ -16,6 +16,7 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	private static final String TEST_PHONE_NUMBER = "606012347";
 	private static final String TEST_NONVALID_PHONE_NUMBER = "111111111";
 	private static final String VALID_EMAIL = "jorgonor88@gmail.com";
+	private static final String NON_VALID_EMAIL = "aasd@somedomain.";
 	
 	private EmailValidator realEmailValidator;
 	
@@ -125,9 +126,20 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 		ContactsBook.addEmail(usedEmail).to(personName);
 	}
 	
+	@When("a non-valid e-mail is added to the person \"personName\"")
+	public void nonValidEmailAddedToPerson(String personName) {
+		usedEmail = NON_VALID_EMAIL;
+		ContactsBook.addEmail(usedEmail).to(personName);
+	}
+	
 	@When("the e-mail is valid") 
 	public void theEmailIsValid() {
 	 	assertTrue(realEmailValidator.validate(Email.create(usedEmail)));
+	}
+	
+	@When("the e-mail is non-valid")
+	public void theEmailIsNotValid() {
+	 	assertFalse(realEmailValidator.validate(Email.create(usedEmail)));
 	}
 	
 	@Then("the person called \"$personName\" is stored")
@@ -210,5 +222,11 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 		for(String emailStr : emailsAsStrings) {
 			assertThat(emails, hasItem(emailStr));
 		}
+	}
+	
+	@Then("the e-mail is not added to the person \"$personName\"")
+	public void theEmailIsNotAddedToThePerson(String personName) throws NotExistsPersonException {
+		assertFalse(ContactsBook.getEmailsFromPersonName(personName)
+				   .contains(NON_VALID_EMAIL));
 	}
 }
