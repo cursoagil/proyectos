@@ -8,50 +8,31 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uji.agile.contactsbook.ContactsBook;
 import org.uji.agile.contactsbook.Email;
-import org.uji.agile.contactsbook.EmailService;
-import org.uji.agile.contactsbook.EmailValidator;
-import org.uji.agile.contactsbook.FileStorage;
 import org.uji.agile.contactsbook.NotExistsPersonException;
 import org.uji.agile.contactsbook.Phone;
-import org.uji.agile.contactsbook.PhoneService;
-import org.uji.agile.contactsbook.PhoneValidator;
-import org.uji.agile.contactsbook.Storage;
+import org.uji.agile.contactsbook.tests.ContactsBookTestSuiteTemplate;
 
 import static org.junit.matchers.JUnitMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class ContactsBookTest {
+public class ContactsBookTest extends ContactsBookTestSuiteTemplate {
 
 	private static final String TEST_EMAIL_STR = "jorgonor88@gmail.com";
-	private PhoneService mockPhoneService;
-	private PhoneValidator mockPhoneValidator;
-	private EmailService mockEmailService;
-	private Storage fileStorage;
-	private EmailValidator mockEmailValidator;
 	
 	@Before
 	public void setUp() {
-		mockPhoneService = mock(PhoneService.class);
-		mockPhoneValidator = mock(PhoneValidator.class);
-		mockEmailService = mock(EmailService.class);
-		mockEmailValidator = mock(EmailValidator.class, CALLS_REAL_METHODS);
-		
-		when(mockPhoneValidator.validate(Phone.create("606912312"))).thenReturn(true);
-		when(mockEmailService.send(Email.create(TEST_EMAIL_STR))).thenReturn(true);
-		fileStorage = new FileStorage();
-		
-		
-		ContactsBook.setPhoneService(mockPhoneService);
-		ContactsBook.setEmailService(mockEmailService);
-		ContactsBook.setPhoneValidator(mockPhoneValidator);
-		ContactsBook.setStorage(fileStorage);
-		ContactsBook.setEmailValidator(mockEmailValidator);
+		setUpContactsBook();
 	}
 
+	protected void initMocksBehaviour() {
+		when(mockPhoneValidator.validate(Phone.create("606912312"))).thenReturn(true);
+		when(mockEmailService.send(Email.create(TEST_EMAIL_STR))).thenReturn(true);
+	}
+	
 	@After
 	public void tearDown() {
-		fileStorage.removeAll();
+		mockFileStorage.removeAll();
 	}
 	
 	@Test

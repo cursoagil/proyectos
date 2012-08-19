@@ -15,45 +15,46 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.uji.agile.contactsbook.ContactsBook;
-import org.uji.agile.contactsbook.FileStorage;
 import org.uji.agile.contactsbook.NotExistsPersonException;
 import org.uji.agile.contactsbook.Phone;
-import org.uji.agile.contactsbook.PhoneService;
 import org.uji.agile.contactsbook.PhoneValidator;
 import org.uji.agile.contactsbook.SpanishPhoneValidator;
+import org.uji.agile.contactsbook.tests.ContactsBookTestSuiteTemplate;
 
-public class ContactsBookSteps {
+public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 
-	protected SpanishPhoneValidator phoneValidatorMock;
-	protected PhoneService phoneServiceMock;
-	protected FileStorage storage;
 	protected List<String> phonesAsStrings;
 
 	private static final String TEST_PHONE_NUMBER = "606012347";
 	private static final String TEST_NONVALID_PHONE_NUMBER = "111111111";
 	
 	@BeforeScenario
-	public void setUp() {
-		phoneValidatorMock = mock(SpanishPhoneValidator.class);
-		phoneServiceMock = mock(PhoneService.class);
-		storage = new FileStorage();
-		
-		when(phoneValidatorMock.validate(Phone.create(TEST_PHONE_NUMBER))).thenReturn(true);
-		
-		ContactsBook.setPhoneValidator(phoneValidatorMock);
-		ContactsBook.setPhoneService(phoneServiceMock);
-		ContactsBook.setStorage(storage); 
-		
+	public void beforeScenario() {
+		setUpContactsBook();
+		truncateStorage();
+	}
+	
+	protected void truncateStorage() {
+		mockFileStorage.removeAll();
+	}
+	
+	
+	@Override
+	protected void initMocks() {
+		super.initMocks();
+		mockPhoneValidator = mock(SpanishPhoneValidator.class, CALLS_REAL_METHODS);		
+	}
+	
+	@Override
+	protected void initMocksBehaviour() {
 		phonesAsStrings = new ArrayList<String>();
 		phonesAsStrings.add("653423121");
 		phonesAsStrings.add("912354232");
-		
-		storage.removeAll();
 	}
 	
 	@Given("a non-existing person identified by \"$personName\"")
 	public void nonExistingPersonIdentifiedBy(String personName) {
-		assertFalse(storage.exists(personName));
+		assertFalse(mockFileStorage.exists(personName));
 	}
 	
 	@Given("a person identified by \"$personName\" with phone numbers") 
@@ -92,7 +93,7 @@ public class ContactsBookSteps {
 	@When("\"$personName\" has some phones")
 	public void personHasSomePhones(String personName) throws NotExistsPersonException {
 		for (String phoneAsString : phonesAsStrings) {
-			when(phoneValidatorMock.validate(Phone.create(phoneAsString)))
+			when(mockPhoneValidator.validate(Phone.create(phoneAsString)))
 								   .thenReturn(true);
 			ContactsBook.addPhone(phoneAsString).to(personName);
 		}
@@ -125,12 +126,12 @@ public class ContactsBookSteps {
 	
 	@Then("the valid phone is validated") 
 	public void validPhoneIsValidated() {
-		verify(phoneValidatorMock).validate(Phone.create(TEST_PHONE_NUMBER));
+		verify(mockPhoneValidator).validate(Phone.create(TEST_PHONE_NUMBER));
 	}
 	
 	@Then("the non-valid phone is validated") 
 	public void nonValidPhoneIsValidated() {
-		verify(phoneValidatorMock).validate(Phone.create(TEST_NONVALID_PHONE_NUMBER));
+		verify(mockPhoneValidator).validate(Phone.create(TEST_NONVALID_PHONE_NUMBER));
 	}
 	
 	@Then("the phone is added to the person \"$personName\"")
@@ -152,5 +153,5 @@ public class ContactsBookSteps {
 			assertThat(phones, hasItem(Phone.create(s)));	
 		}
 	}
-	
+
 }
