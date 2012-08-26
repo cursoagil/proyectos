@@ -38,8 +38,11 @@ public class FilePersonDAO implements PersonDAO {
 	public List<Person> search(String substring) {
 		List<Person> result = new ArrayList<Person>();
 		List<Person> everyone = ObjectSerializer.readAll(STORAGE_DIR);
+		String upperCasedSubstring = substring.toUpperCase();
+		
 		for(Person person : everyone) {
-			if (person.getIdentifier().contains(substring)) {
+			
+			if (person.getIdentifier().toUpperCase().contains(upperCasedSubstring)) {
 				result.add(person);
 			}
 		}

@@ -13,16 +13,16 @@ import static org.junit.matchers.JUnitMatchers.*;
 
 public class FilePersonDAOTest {
 
-	private FilePersonDAO filePersonDAO;
+	private FilePersonDAO personDAO;
 
 	@Before
 	public void setUp() {
-		filePersonDAO = new FilePersonDAO();
+		personDAO = new FilePersonDAO();
 	}
 	
 	@After
 	public void tearDown() {
-		filePersonDAO.removeAll();
+		personDAO.removeAll();
 	}
 	
 	@Test
@@ -30,7 +30,7 @@ public class FilePersonDAOTest {
 		Person person = new Person();
 		person.addPhone(Phone.create("676767676"));
 		
-		boolean result = filePersonDAO.save(person);
+		boolean result = personDAO.save(person);
 		
 		assertTrue(result);
 	}
@@ -41,13 +41,13 @@ public class FilePersonDAOTest {
 		
 		person.addPhone(Phone.create("600600600"));
 		
-		boolean result = filePersonDAO.save(person);
+		boolean result = personDAO.save(person);
 		
 		assertTrue(result);
 		
 		Person recoveredPerson = null;
 		try {
-			recoveredPerson = filePersonDAO.read("Manolo Domínguez");
+			recoveredPerson = personDAO.read("Manolo Domínguez");
 		} catch (NotFoundIdentifierException e) {
 			Assert.fail();
 		}
@@ -59,66 +59,77 @@ public class FilePersonDAOTest {
 	
 	@Test
 	public void existsShouldReturnFalseWhenThePersonHasntBeenStored() {
-		assertFalse(filePersonDAO.exists("Aimar"));
+		assertFalse(personDAO.exists("Aimar"));
 	}
 	
 	@Test
 	public void existsShouldReturnTrueWhenThePersonHasBeenSavedPreviously() {
-		filePersonDAO.save(new Person("José María Ruíz"));
-		assertTrue(filePersonDAO.exists("José María Ruíz"));
+		personDAO.save(new Person("José María Ruíz"));
+		assertTrue(personDAO.exists("José María Ruíz"));
 	}
 	
 	@Test
 	public void removeAllShouldDeleteAnyData() {
-		filePersonDAO.save(new Person("José María"));
-		filePersonDAO.removeAll();
-		assertFalse(filePersonDAO.exists("José María"));
+		personDAO.save(new Person("José María"));
+		personDAO.removeAll();
+		assertFalse(personDAO.exists("José María"));
 	}
 	
 	@Test
 	public void addressCanBeStoredWithHisRelatedPerson() {
 		Person person = new Person("José María");
 		person.addAddress(Address.create("C/ Los Angeles nº 23"));
-		filePersonDAO.save(person);
+		personDAO.save(person);
 	}
 	
 	@Test
 	public void addressCanBeRecoveredFromHisRelatedPerson() throws NotFoundIdentifierException {
 		Person person = new Person("José María");
 		person.addAddress(Address.create("C/ Los Angeles nº 23"));
-		filePersonDAO.save(person);
-		Person retrievedPerson = filePersonDAO.read("José María");
+		personDAO.save(person);
+		Person retrievedPerson = personDAO.read("José María");
 		assertThat(retrievedPerson.getAddresses(), hasItem(Address.create("C/ Los Angeles nº 23")));
 		assertEquals(1,retrievedPerson.getAddresses().size());
 	}
 	
 	@Test
-	public void matchReturnsNoPersonWhenThereIsNoPersonInTheSystem() {
-		List<Person> matchedPeople = filePersonDAO.search("a");
+	public void searchReturnsNoPersonWhenThereIsNoPersonInTheSystem() {
+		List<Person> matchedPeople = personDAO.search("a");
 		assertEquals(0, matchedPeople.size());
 	}
 	
 	@Test
-	public void matchReturnsPeopleWhoMatchWithTheString() {
+	public void searchReturnsPeopleWhoMatchWithTheString() {
 		Person maria = new Person("Maria");
-		filePersonDAO.save(maria);
-		List<Person> matchedPeople = filePersonDAO.search("a");
+		personDAO.save(maria);
+		List<Person> matchedPeople = personDAO.search("a");
 		
-		assertThat(matchedPeople, hasItem(maria));
-		assertEquals(1, matchedPeople.size());
+		assertHasOnly(matchedPeople, maria);
 	}
 	
 	@Test
-	public void matchReturnsOnlyThePeopleWhoMatchWithTheString() {
+	public void searchReturnsOnlyThePeopleWhoMatchWithTheString() {
 		Person alberto = new Person("Alberto"),
 			   maria = new Person("Maria");
 		
-		filePersonDAO.save(alberto);
-		filePersonDAO.save(maria);
+		personDAO.save(alberto);
+		personDAO.save(maria);
 		
-		List<Person> matchedPeople = filePersonDAO.search("e");
-		assertThat(matchedPeople, hasItem(alberto));
-		assertEquals(1, matchedPeople.size());
+		List<Person> matchedPeople = personDAO.search("e");
+		assertHasOnly(matchedPeople, alberto);
+	}
+	
+	@Test
+	public void searchIsCaseInsensitive() {
+		Person alberto = new Person("Alberto");
+		
+		personDAO.save(alberto);
+		assertHasOnly(personDAO.search("a"), alberto);
+	}
+	
+	private static <E> void assertHasOnly(List<E> collection, E item) {
+		assertThat(collection, hasItem(item));
+		assertEquals(1, collection.size());
 	}
 }
 
