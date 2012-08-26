@@ -58,5 +58,15 @@ public class Person implements Serializable {
 	public List<Address> getAddresses() {
 		return addresses;
 	}
+	
+	public boolean equals(Object other) {
+		if (!(other instanceof Person)) return false;
+		Person otherPerson = (Person) other;
+		return this.name.equals(otherPerson.name);
+	}
 
+	public int hashCode() {
+		return this.name.hashCode();
+	}
+	
 }

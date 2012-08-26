@@ -7,7 +7,7 @@ import org.uji.agile.contactsbook.Email;
 import org.uji.agile.contactsbook.Person;
 import org.uji.agile.contactsbook.Phone;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 
@@ -44,5 +44,26 @@ public class PersonTest {
 		
 		assertThat(person.getAddresses(), hasItem(address));
 		assertThat(otherPerson.getAddresses(), hasItem(address));
+	}
+	
+	@Test
+	public void equalsReturnsTrueWhenPersonsHaveTheSameIdentifier() {
+		Person person = new Person("identifier"),
+			   otherPerson = new Person("identifier");
+		
+		assertTrue(person.equals(otherPerson));
+	}
+	
+	@Test
+	public void equalsReturnsFalseWhenArgumentIsNotAPersonInstance() {
+		assertFalse(new Person("Maria").equals("Maria"));
+	}
+	
+	@Test
+	public void equalsReturnsFalseWhenArgumentHasNotTheSameIdentifier() {
+		Person maria = new Person("Maria"),
+			   yolanda = new Person("Yolanda");
+		
+		assertFalse(maria.equals(yolanda));
 	}
 }
