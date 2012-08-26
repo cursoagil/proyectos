@@ -14,6 +14,8 @@ public class ObjectSerializer {
 
 	public static final String SERIALIZED_FILE_EXTENSION = ".ser";
 	
+	private ObjectSerializer() {}
+	
 	private static List<File> listSerializationFiles(String directoryPath) {
 		List<File> personFiles = new ArrayList<File>();
 		File directory = new File(directoryPath);
