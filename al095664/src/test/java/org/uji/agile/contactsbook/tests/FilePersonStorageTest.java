@@ -10,13 +10,13 @@ import org.uji.agile.contactsbook.*;
 import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.*;
 
-public class FileStorageTest {
+public class FilePersonStorageTest {
 
-	private FileStorage fileStorage;
+	private FilePersonStorage filePersonStorage;
 
 	@Before
 	public void setUp() {
-		fileStorage = new FileStorage();
+		filePersonStorage = new FilePersonStorage();
 	}
 	
 	@Test
@@ -24,7 +24,7 @@ public class FileStorageTest {
 		Person person = new Person();
 		person.addPhone(Phone.create("676767676"));
 		
-		boolean result = fileStorage.save(person);
+		boolean result = filePersonStorage.save(person);
 		
 		assertTrue(result);
 	}
@@ -35,13 +35,13 @@ public class FileStorageTest {
 		
 		person.addPhone(Phone.create("600600600"));
 		
-		boolean result = fileStorage.save(person);
+		boolean result = filePersonStorage.save(person);
 		
 		assertTrue(result);
 		
 		Person recoveredPerson = null;
 		try {
-			recoveredPerson = (Person)fileStorage.read("Manolo Domínguez");
+			recoveredPerson = filePersonStorage.read("Manolo Domínguez");
 		} catch (NotFoundIdentifierException e) {
 			Assert.fail();
 		}
@@ -53,35 +53,35 @@ public class FileStorageTest {
 	
 	@Test
 	public void existsShouldReturnFalseWhenThePersonHasntBeenStored() {
-		assertFalse(fileStorage.exists("Aimar"));
+		assertFalse(filePersonStorage.exists("Aimar"));
 	}
 	
 	@Test
 	public void existsShouldReturnTrueWhenThePersonHasBeenSavedPreviously() {
-		fileStorage.save(new Person("José María Ruíz"));
-		assertTrue(fileStorage.exists("José María Ruíz"));
+		filePersonStorage.save(new Person("José María Ruíz"));
+		assertTrue(filePersonStorage.exists("José María Ruíz"));
 	}
 	
 	@Test
 	public void removeAllShouldDeleteAnyData() {
-		fileStorage.save(new Person("José María"));
-		fileStorage.removeAll();
-		assertFalse(fileStorage.exists("José María"));
+		filePersonStorage.save(new Person("José María"));
+		filePersonStorage.removeAll();
+		assertFalse(filePersonStorage.exists("José María"));
 	}
 	
 	@Test
 	public void addressCanBeStoredWithHisRelatedPerson() {
 		Person person = new Person("José María");
 		person.addAddress(Address.create("C/ Los Angeles nº 23"));
-		fileStorage.save(person);
+		filePersonStorage.save(person);
 	}
 	
 	@Test
 	public void addressCanBeRecoveredFromHisRelatedPerson() throws NotFoundIdentifierException {
 		Person person = new Person("José María");
 		person.addAddress(Address.create("C/ Los Angeles nº 23"));
-		fileStorage.save(person);
-		Person retrievedPerson = (Person)fileStorage.read("José María");
+		filePersonStorage.save(person);
+		Person retrievedPerson = filePersonStorage.read("José María");
 		assertThat(retrievedPerson.getAddresses(), hasItem(Address.create("C/ Los Angeles nº 23")));
 		assertEquals(1,retrievedPerson.getAddresses().size());
 	}

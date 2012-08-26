@@ -8,30 +8,30 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-public class FileStorage implements Storage {
+public class FilePersonStorage implements PersonStorage {
 
 	private static final String SERIALIZED_FILE_EXTENSION = ".ser";
 	private static final String STORAGE_DIR = "/tmp";
 	
 	@Override
-	public boolean save(StorageSerializable storageable) {
-		String identifier = storageable.getIdentifier();
+	public boolean save(Person person) {
+		String identifier = person.getIdentifier();
 		ObjectOutputStream persistenceStream = getOutputPersistenceStreamFromIdentifier(identifier);
 		if (persistenceStream == null) return false;
-		return writeObjectOnPersistenceStream(storageable, persistenceStream);
+		return writeObjectOnPersistenceStream(person, persistenceStream);
 	}
 
 	@Override
-	public StorageSerializable read(String identifier) throws NotFoundIdentifierException {
+	public Person read(String identifier) throws NotFoundIdentifierException {
 		ObjectInputStream persistenceStream = getInputPersistenceStreamFromIdentifier(identifier);
 		if (persistenceStream == null) {
 			throw new NotFoundIdentifierException();
 		}
-		StorageSerializable readObject = readRawObjectFromPersistenceStream(persistenceStream);
-		if (readObject == null) {
+		Person readPerson = readPersonFromPersistenceStream(persistenceStream);
+		if (readPerson == null) {
 			throw new NotFoundIdentifierException();
 		}
-		return readObject;
+		return readPerson;
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class FileStorage implements Storage {
 		return persistenceStream;
 	}
 	
-	private StorageSerializable readRawObjectFromPersistenceStream(ObjectInputStream persistenceStream) {
+	private Person readPersonFromPersistenceStream(ObjectInputStream persistenceStream) {
 		Object rawObject = null;
 		try {
 			rawObject = persistenceStream.readObject();
@@ -93,10 +93,10 @@ public class FileStorage implements Storage {
 		} catch (ClassNotFoundException e) {
 			rawObject = null;
 		}
-		return (StorageSerializable) rawObject;
+		return (Person) rawObject;
 	}
 	
-	private boolean writeObjectOnPersistenceStream(StorageSerializable object, ObjectOutputStream persistenceStream) {
+	private boolean writeObjectOnPersistenceStream(Person object, ObjectOutputStream persistenceStream) {
 		boolean isOK = true;
 		try {
 			persistenceStream.writeObject(object);

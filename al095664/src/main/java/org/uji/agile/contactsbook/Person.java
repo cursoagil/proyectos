@@ -1,9 +1,10 @@
 package org.uji.agile.contactsbook;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Person implements StorageSerializable {
+public class Person implements Serializable {
 
 	private static final long serialVersionUID = 1352775845608894734L;
 	
@@ -29,7 +30,6 @@ public class Person implements StorageSerializable {
 		addresses = new ArrayList<Address>();
 	}
 
-	@Override
 	public String getIdentifier() {
 		return name;
 	}

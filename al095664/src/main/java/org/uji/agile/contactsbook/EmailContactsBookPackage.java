@@ -4,21 +4,21 @@ public class EmailContactsBookPackage extends ContactsBookPackage {
 
 	private String emailStr;
 
-	public EmailContactsBookPackage(String emailStr, Storage storage) {
+	public EmailContactsBookPackage(String emailStr, PersonStorage storage) {
 		this.emailStr = emailStr;
-		this.storage = storage;
+		this.personStorage = storage;
 	}
 	
 	@Override
 	public ContactsBookPackage to(String personName) {
 		Person person = null;
 		try {
-			person = (Person)storage.read(personName);
+			person = personStorage.read(personName);
 		} catch (NotFoundIdentifierException e) {
 			person = new Person(personName);
 		}
 		person.addEmail(Email.create(emailStr));
-		storage.save(person);
+		personStorage.save(person);
 		return this;
 	}
 

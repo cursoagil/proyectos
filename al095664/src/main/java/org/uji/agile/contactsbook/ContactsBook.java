@@ -9,7 +9,7 @@ public final class ContactsBook {
 
 	private static PhoneService phoneService;
 	private static PhoneValidator phoneValidator;
-	private static Storage storage;
+	private static PersonStorage personStorage;
 	private static EmailValidator emailValidator;
 	private static EmailService emailService;
 	
@@ -23,8 +23,8 @@ public final class ContactsBook {
 		phoneValidator = validator;
 	}
 
-	public static void setStorage(Storage iStorage) {
-		storage = iStorage;
+	public static void setStorage(PersonStorage iPersonStorage) {
+		personStorage = iPersonStorage;
 	}
 
 	public static void setEmailValidator(EmailValidator iEmailValidator) {
@@ -53,23 +53,23 @@ public final class ContactsBook {
 	
 	public static void addPerson(String personIdentifier) {
 		Person person = new Person(personIdentifier);
-		storage.save(person);
+		personStorage.save(person);
 	}
 	
 	public static ContactsBookPackage addPhone(String phonenumber) {
 		if (phoneValidator.validate(Phone.create(phonenumber))) {
-			return new PhoneContactsBookPackage(phonenumber, storage);	
+			return new PhoneContactsBookPackage(phonenumber, personStorage);	
 		}
 		return new NullContactsBookPackage();
 	}
 
 	public static ContactsBookPackage addAddress(String address) {
-		return new AddressContactsBookPackage(address, storage);
+		return new AddressContactsBookPackage(address, personStorage);
 	}
 
 	public static ContactsBookPackage addEmail(String email) {
 		if (emailValidator.validate(Email.create(email))) {
-			return new EmailContactsBookPackage(email, storage);	
+			return new EmailContactsBookPackage(email, personStorage);	
 		}
 		return new NullContactsBookPackage();
 	}
@@ -112,7 +112,7 @@ public final class ContactsBook {
 			throws NotExistsPersonException {
 		Person person;
 		try {
-			person = (Person)storage.read(personName);
+			person = personStorage.read(personName);
 		} catch (NotFoundIdentifierException e) {
 			throw new NotExistsPersonException();
 		}
