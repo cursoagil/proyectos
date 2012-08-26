@@ -21,6 +21,8 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 	
 	private EmailValidator realEmailValidator;
 	
+	private List<Person> matchedPeople;
+
 	private List<String> emailsAsStrings;
 	protected List<String> phonesAsStrings;
 	private String usedEmail;
@@ -179,6 +181,11 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 											 .and("Jorge");
 	}
 	
+	@When("a search by \"$searchString\" is done")
+	public void searchBySearchString(String searchString) {
+		matchedPeople = ContactsBook.searchBy(searchString);
+	}
+	
 	@Then("the person called \"$personName\" is stored")
 	public void personIsCreated(String personName) {
 		try {
@@ -279,6 +286,11 @@ public class ContactsBookSteps extends ContactsBookTestSuiteTemplate {
 			ContactsBook.getAddressesFromPersonName(personName);
 
 		assertThat(addresses, hasItem(TEST_ADDRESS));
+	}
+	
+	@Then("\"$personName\" is in the result")
+	public void personIsInTheMatchedList(String personName) {
+		assertThat(matchedPeople, hasItem(new Person(personName)));
 	}
 	
 }

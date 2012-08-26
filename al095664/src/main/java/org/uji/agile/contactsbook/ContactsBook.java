@@ -74,6 +74,10 @@ public final class ContactsBook {
 		return new NullContactsBookPackage();
 	}
 
+	public static List<Person> searchBy(String substring) {
+		return personDAO.search(substring);
+	}
+	
 	public static List<String> getPhonesFromPersonName(String personName) throws NotExistsPersonException {
 		Person person = getPersonFromIdentifier(personName);
 		
