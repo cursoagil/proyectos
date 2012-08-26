@@ -4,16 +4,16 @@ public class AddressContactsBookPackage extends ContactsBookPackage {
 
 	private Address pendingAddress;
 
-	public AddressContactsBookPackage(String address, PersonStorage storage) {
+	public AddressContactsBookPackage(String address, PersonDAO personDAO) {
 		pendingAddress = Address.create(address);
-		this.personStorage = storage;
+		this.personDAO = personDAO;
 	}
 	
 	@Override
 	public AddressContactsBookPackage to(String personName) {
 		Person person = getPersonFromIdentifier(personName);
 		person.addAddress(pendingAddress);
-		personStorage.save(person);
+		personDAO.save(person);
 		return this;
 	}
 	

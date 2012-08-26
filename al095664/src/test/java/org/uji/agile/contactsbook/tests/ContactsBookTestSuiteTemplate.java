@@ -7,17 +7,17 @@ import org.uji.agile.contactsbook.ContactsBook;
 import org.uji.agile.contactsbook.EmailService;
 import org.uji.agile.contactsbook.EmailServiceImpl;
 import org.uji.agile.contactsbook.EmailValidator;
-import org.uji.agile.contactsbook.FilePersonStorage;
+import org.uji.agile.contactsbook.FilePersonDAO;
 import org.uji.agile.contactsbook.PhoneService;
 import org.uji.agile.contactsbook.PhoneValidator;
-import org.uji.agile.contactsbook.PersonStorage;
+import org.uji.agile.contactsbook.PersonDAO;
 
 public abstract class ContactsBookTestSuiteTemplate {
 
 	protected PhoneService mockPhoneService;
 	protected PhoneValidator mockPhoneValidator;
 	protected EmailService mockEmailService;
-	protected PersonStorage mockFileStorage;
+	protected PersonDAO mockFileStorage;
 	protected EmailValidator mockEmailValidator;
 	
 	protected void setUpContactsBook() {
@@ -31,7 +31,7 @@ public abstract class ContactsBookTestSuiteTemplate {
 		mockPhoneValidator = mock(PhoneValidator.class);
 		mockEmailService = mock(EmailServiceImpl.class, CALLS_REAL_METHODS);
 		mockEmailValidator = mock(EmailValidator.class, CALLS_REAL_METHODS);
-		mockFileStorage = mock(FilePersonStorage.class, CALLS_REAL_METHODS);
+		mockFileStorage = mock(FilePersonDAO.class, CALLS_REAL_METHODS);
 	}
 
 	protected void initContactsBook() {

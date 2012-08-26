@@ -3,16 +3,16 @@ package org.uji.agile.contactsbook;
 public class PhoneContactsBookPackage extends ContactsBookPackage {
 	private String phoneNumber;
 	
-	public PhoneContactsBookPackage(String phoneStr, PersonStorage storage) {
+	public PhoneContactsBookPackage(String phoneStr, PersonDAO personDAO) {
 		this.phoneNumber = phoneStr;
-		this.personStorage = storage;
+		this.personDAO = personDAO;
 	}
 	
 	public ContactsBookPackage to(String personName) {
 		Phone phone = getPhoneFromPendingData();
 		Person person = getPersonFromIdentifier(personName);
 		person.addPhone(phone);
-		personStorage.save(person);
+		personDAO.save(person);
 		return this;
 	}
 

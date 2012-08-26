@@ -2,15 +2,15 @@ package org.uji.agile.contactsbook;
 
 public abstract class ContactsBookPackage {
 	
-	protected PersonStorage personStorage;
+	protected PersonDAO personDAO;
 	
 	public abstract ContactsBookPackage to(String personName);
 	
 	protected Person getPersonFromIdentifier(String personName) {
 		Person person = null;
-		if (personStorage.exists(personName)) {
+		if (personDAO.exists(personName)) {
 			try {
-				person = personStorage.read(personName);
+				person = personDAO.read(personName);
 			} catch (NotFoundIdentifierException e) {
 				e.printStackTrace();
 			}	
