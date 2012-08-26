@@ -14,7 +14,7 @@ public class ObjectSerializer {
 
 	public static final String SERIALIZED_FILE_EXTENSION = ".ser";
 	
-	public static List<File> listSerializationFiles(String directoryPath) {
+	private static List<File> listSerializationFiles(String directoryPath) {
 		List<File> personFiles = new ArrayList<File>();
 		File directory = new File(directoryPath);
 		if (directory.isDirectory()) {
@@ -25,14 +25,6 @@ public class ObjectSerializer {
 			}
 		}
 		return personFiles;
-	}
-	
-	public static String removeExtension(String filename) {
-		int index = filename.lastIndexOf(SERIALIZED_FILE_EXTENSION);
-		if (index >= 0) {
-			filename = filename.substring(0, index);
-		}
-		return filename;
 	}
 	
 	private static <E> E readFromPersistenceStream(ObjectInputStream persistenceStream) {
@@ -47,7 +39,7 @@ public class ObjectSerializer {
 		return (E) rawObject;
 	}
 
-	private static ObjectInputStream getInputPersistenceStreamFromRoute(String route) {
+	private static ObjectInputStream createInputPersistenceStream(String route) {
 		ObjectInputStream persistenceStream = null;
 		
 		try {
@@ -62,7 +54,7 @@ public class ObjectSerializer {
 	}
 	
 	
-	public static ObjectOutputStream getOutputPersistenceStreamFromRoute(String route) {
+	private static ObjectOutputStream createOutputPersistenceStream(String route) {
 		ObjectOutputStream persistenceStream = null ;
 		try {
 			persistenceStream = new ObjectOutputStream(
@@ -76,14 +68,14 @@ public class ObjectSerializer {
 		return persistenceStream;
 	}
 	
-	public static <E> boolean writeObjectOnPersistenceStream(E object, ObjectOutputStream persistenceStream) {
-		boolean isOK = true;
+	private static <E> boolean writeObjectOnPersistenceStream(E object, ObjectOutputStream persistenceStream) {
+		boolean noExceptionThrown = true;
 		try {
 			persistenceStream.writeObject(object);
 		} catch (IOException e) {
-			isOK = false;
+			noExceptionThrown = false;
 		}
-		return isOK;
+		return noExceptionThrown;
 	}
 
 	public static void removeAll(String directoryPath) {
@@ -97,17 +89,15 @@ public class ObjectSerializer {
 	}
 
 	public static <E> E readObject(String route) {
-		ObjectInputStream persistenceStream = ObjectSerializer.getInputPersistenceStreamFromRoute(route);
-		if (persistenceStream == null) {
-			return null;
-		}
-		return ObjectSerializer.readFromPersistenceStream(persistenceStream);
+		ObjectInputStream persistenceStream = createInputPersistenceStream(route);
+		if (persistenceStream == null) return null;
+		return readFromPersistenceStream(persistenceStream);
 	}
 
-	public static <E> boolean writeObject(E person, String filename) {
-		ObjectOutputStream persistenceStream = ObjectSerializer.getOutputPersistenceStreamFromRoute(filename);
+	public static <E> boolean writeObject(E object, String filename) {
+		ObjectOutputStream persistenceStream = createOutputPersistenceStream(filename);
 		if (persistenceStream == null) return false;
-		return ObjectSerializer.writeObjectOnPersistenceStream(person, persistenceStream);
+		return writeObjectOnPersistenceStream(object, persistenceStream);
 	}
 
 	public static <E> List<E> readAll(String directoryPath) {
