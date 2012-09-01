@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectSerializer {
+public final class ObjectSerializer {
 
 	public static final String SERIALIZED_FILE_EXTENSION = ".ser";
 	

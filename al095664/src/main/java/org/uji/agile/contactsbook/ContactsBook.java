@@ -118,7 +118,9 @@ public final class ContactsBook {
 		try {
 			person = personDAO.read(personName);
 		} catch (NotFoundIdentifierException e) {
-			throw new NotExistsPersonException();
+			NotExistsPersonException rethrownException = new NotExistsPersonException();
+			rethrownException.initCause(e);
+			throw rethrownException;
 		}
 		return person;
 	}

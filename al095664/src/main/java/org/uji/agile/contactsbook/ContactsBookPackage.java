@@ -8,16 +8,12 @@ public abstract class ContactsBookPackage {
 	
 	protected Person getPersonFromIdentifier(String personName) {
 		Person person = null;
-		if (personDAO.exists(personName)) {
-			try {
-				person = personDAO.read(personName);
-			} catch (NotFoundIdentifierException e) {
-				e.printStackTrace();
-			}	
-		}
-		else {
+		try {
+			person = personDAO.read(personName);
+		} catch (NotFoundIdentifierException e) {
 			person = new Person(personName);
-		}
+		}	
+
 		return person;
 	}
 	
