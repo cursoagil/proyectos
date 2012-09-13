@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Configuration {
+final class Configuration {
 	private static final String STORAGE_DIR_PROPERTY = "storage_dir";
 	private static final String PROPERTIES_FILE = "conf.properties";
 	private static Properties properties;
