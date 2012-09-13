@@ -24,3 +24,7 @@ Pasos para seguir la integración continua del proyecto.
 9.  Añadir un pre-commit hook en el repositorio (que deberán ejecutar los 
     desarrolladores del proyecto) para que git ejecute un "mvn test" antes de 
     permitir hacer commit, evitando así commits que no pasen tests unitarios.
+10. A la tarde de la jornada, dos de los desarrolladores del equipo revisarán
+    las últimas violaciones del Sonar, además del aumento de complejidad que va
+    tomando el proyecto, para atacar estas partes en un refactoring el día
+    siguiente.
