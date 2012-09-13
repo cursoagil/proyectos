@@ -6,8 +6,12 @@ import java.util.List;
 import org.uji.agile.contactsbook.internals.ObjectSerializer;
 
 public class FilePersonDAO implements PersonDAO {
+	private static final String DEFAULT_STORAGE_DIR = "/tmp";
+	private static String storageDir;
 	
-	private static final String STORAGE_DIR = "/tmp";
+	static {
+		storageDir = Configuration.readStorageDirectory(DEFAULT_STORAGE_DIR);
+	}
 	
 	@Override
 	public boolean save(Person person) {
@@ -31,13 +35,13 @@ public class FilePersonDAO implements PersonDAO {
 
 	@Override
 	public void removeAll() {
-		ObjectSerializer.removeAll(STORAGE_DIR);
+		ObjectSerializer.removeAll(storageDir);
 	}	
 	
 	@Override
 	public List<Person> search(String substring) {
 		List<Person> result = new ArrayList<Person>();
-		List<Person> everyone = ObjectSerializer.readAll(STORAGE_DIR);
+		List<Person> everyone = ObjectSerializer.readAll(storageDir);
 		String upperCasedSubstring = substring.toUpperCase();
 		
 		for(Person person : everyone) {
@@ -51,6 +55,6 @@ public class FilePersonDAO implements PersonDAO {
 	}
 	
 	private static String buildSerializedFileRoute(String identifier) {
-		return STORAGE_DIR + "/" + identifier + ObjectSerializer.SERIALIZED_FILE_EXTENSION;
+		return storageDir + "/" + identifier + ObjectSerializer.SERIALIZED_FILE_EXTENSION;
 	}
 }
